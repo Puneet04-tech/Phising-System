@@ -73,3 +73,38 @@ Content-Type: application/json
 {
   "email": "testuser3@example.com"
 }
+
+# =========================
+# Scans + Dashboard (need JWT)
+# =========================
+# NOTE:
+# - First run the "Login - happy path" block above to get accessToken.
+# - Then paste it into the Authorization header below as {{token}}.
+#
+# If you use VSCode REST Client, you can manually edit this token value.
+
+### URL Scan (Protected) - expect 201
+POST http://localhost:5000/api/scans/url
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "url": "http://secure-paypal-login-free.com"
+}
+
+### Email Scan (Protected) - expect 201
+POST http://localhost:5000/api/scans/email
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "Your bank account will be suspended. Verify immediately at http://secure-paypal-login-free.com"
+}
+
+### Scan History (Protected) - expect 200
+GET http://localhost:5000/api/scans/history
+Authorization: Bearer {{token}}
+
+### Scan Stats (Protected) - expect 200
+GET http://localhost:5000/api/scans/stats
+Authorization: Bearer {{token}}

@@ -118,7 +118,60 @@ async function scanEmail(req, res, next) {
   }
 }
 
+async function getMyHistory(req, res, next) {
+  try {
+    const userId = getUserId(req);
+    if (!userId) throw Object.assign(new Error('Unauthorized'), { statusCode: 401 });
+
+    const { scanType } = normalizeBody(req) || {};
+    const query = { userId };
+
+    if (scanType && (scanType === 'url' || scanType === 'email')) {
+      query.scanType = scanType;
+    }
+
+    const history = await ScanHistory.find(query)
+      .sort({ createdAt: -1 })
+      .select('-__v');
+
+    res.json({
+      message: 'Scan history fetched',
+      scans: history,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getMyStats(req, res, next) {
+  try {
+    const userId = getUserId(req);
+    if (!userId) throw Object.assign(new Error('Unauthorized'), { statusCode: 401 });
+
+    const all = await ScanHistory.find({ userId }).select('result.threatStatus');
+
+    const totalScans = all.length;
+    const safeCount = all.filter((s) => s?.result?.threatStatus === 'Safe').length;
+    const suspiciousCount = all.filter((s) => s?.result?.threatStatus === 'Suspicious').length;
+    const maliciousCount = all.filter((s) => s?.result?.threatStatus === 'Malicious').length;
+
+    res.json({
+      totalScans,
+      safeCount,
+      suspiciousCount,
+      maliciousCount,
+      safeRatio: totalScans ? (safeCount / totalScans) * 100 : 0,
+      suspiciousRatio: totalScans ? (suspiciousCount / totalScans) * 100 : 0,
+      maliciousRatio: totalScans ? (maliciousCount / totalScans) * 100 : 0,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   scanUrl,
   scanEmail,
+  getMyHistory,
+  getMyStats,
 };
