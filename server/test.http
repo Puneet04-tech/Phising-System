@@ -1,0 +1,49 @@
+# =========================
+# Health
+# =========================
+GET http://localhost:5000/api/health
+
+### Signup - happy path
+POST http://localhost:5000/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "testuser3@example.com",
+  "password": "password123"
+}
+
+### Signup - duplicate email (expect 409)
+POST http://localhost:5000/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Test User Updated",
+  "email": "testuser3@example.com",
+  "password": "password123"
+}
+
+### Signup - missing email (expect 400)
+POST http://localhost:5000/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "No Email User",
+  "password": "password123"
+}
+
+### Signup - short password (expect 400)
+POST http://localhost:5000/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Short Pass User",
+  "email": "shortpass@example.com",
+  "password": "123"
+}
+
+### Signup - invalid JSON (expect 400)
+POST http://localhost:5000/api/auth/signup
+Content-Type: application/json
+
+{ "name": "Bad JSON", "email": "badjson@example.com", "password": "password123"
