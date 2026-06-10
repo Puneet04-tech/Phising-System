@@ -73,4 +73,52 @@ async function signup(req, res, next) {
   }
 }
 
-module.exports = { signup };
+async function login(req, res, next) {
+  try {
+    let body = req.body;
+
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body);
+      } catch (e) {
+        throw badRequest('Invalid JSON body');
+      }
+    }
+
+    if (!body || typeof body !== 'object') {
+      throw badRequest('Invalid JSON body');
+    }
+
+    const { email, password } = body;
+
+    if (!email || typeof email !== 'string') throw badRequest('Email is required');
+    if (!password || typeof password !== 'string') throw badRequest('Password is required');
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user) throw conflict('Invalid email or password');
+
+    const matches = await bcrypt.compare(password, user.password);
+    if (!matches) throw conflict('Invalid email or password');
+
+    const token = jwt.sign(
+      { sub: user._id.toString(), role: user.role },
+      env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.status(200).json({
+      message: 'Login successful',
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { signup, login };

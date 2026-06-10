@@ -47,3 +47,29 @@ POST http://localhost:5000/api/auth/signup
 Content-Type: application/json
 
 { "name": "Bad JSON", "email": "badjson@example.com", "password": "password123"
+
+### Login - happy path (expect 200)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser3@example.com",
+  "password": "password123"
+}
+
+### Login - wrong password (expect 409)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser3@example.com",
+  "password": "wrongpassword"
+}
+
+### Login - missing password (expect 400)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser3@example.com"
+}
