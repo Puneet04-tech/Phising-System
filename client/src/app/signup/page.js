@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from 'next/navigation';
 import { apiPost } from '../../lib/api';
 import { setToken, clearToken } from '../../lib/auth';
