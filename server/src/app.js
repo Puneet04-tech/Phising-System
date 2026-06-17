@@ -5,6 +5,8 @@ const morgan = require('morgan');
 
 const authRoutes = require('./routes/auth.routes');
 const scanRoutes = require('./routes/scan.routes');
+const adminRoutes = require('./routes/admin.routes');
+const keywordRoutes = require('./routes/keyword.routes');
 
 const app = express();
 
@@ -20,6 +22,8 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/scans', scanRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/keywords', keywordRoutes);
 
 app.use((err, req, res, next) => {
   // eslint-disable-line no-unused-vars

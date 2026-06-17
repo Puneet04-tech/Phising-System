@@ -62,7 +62,17 @@ function scoreUrlByRules(url, externalSignals) {
     if (vtVerdict.includes('malicious')) points += 45;
     else if (vtVerdict.includes('suspicious')) points += 25;
 
-    // If we have any error from providers, keep points as-is (don’t punish)
+    // If Google Safe Browsing found matches
+    if (externalSignals.googleSafeBrowsing?.matches?.length > 0) {
+      points += 40;
+    }
+
+    // If we have any error from providers, keep points as-is (don't punish)
+  } else {
+    // Keyword-only mode: increase sensitivity since we don't have external API data
+    console.log('[Risk Scoring] Using keyword-only mode (no external API data)');
+    // Add a small penalty for lack of external verification
+    points += 5;
   }
 
   const riskPercentage = clamp(points, 0, 100);
@@ -114,13 +124,19 @@ function scoreTextByRules(text, scanType, externalSignals) {
     }
   }
 
-  // If there’s an obvious link, raise a bit
+  // If there's an obvious link, raise a bit
   const hasUrl = /(https?:\/\/|www\.)/i.test(text || '');
   if (hasUrl) points += 15;
 
   // External signals: best-effort
-  if (externalSignals?.googleSafeBrowsing?.matches?.length) {
-    points += 40;
+  if (externalSignals) {
+    if (externalSignals.googleSafeBrowsing?.matches?.length) {
+      points += 40;
+    }
+  } else {
+    // Keyword-only mode: increase sensitivity for email/text scans
+    console.log('[Risk Scoring] Using keyword-only mode for text scan (no external API data)');
+    points += 5;
   }
 
   const riskPercentage = clamp(points, 0, 100);

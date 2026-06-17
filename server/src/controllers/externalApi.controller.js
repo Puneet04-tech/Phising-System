@@ -94,14 +94,47 @@ async function scanWithGoogleSafeBrowsingUrl(url) {
 }
 
 async function forwardUrlToExternalApis(url) {
-  const [vtResult, gsbResult] = await Promise.allSettled([
-    scanWithVirusTotalUrl(url),
-    scanWithGoogleSafeBrowsingUrl(url),
-  ]);
+  /**
+   * Sequential fallback strategy:
+   * 1. Try Google Safe Browsing first (faster, free tier available)
+   * 2. If GSB fails, try VirusTotal
+   * 3. If both fail, return null to indicate keyword-only mode
+   */
+  let gsbResult = null;
+  let vtResult = null;
+
+  // Try Google Safe Browsing first
+  try {
+    console.log('[External API] Trying Google Safe Browsing...');
+    gsbResult = await scanWithGoogleSafeBrowsingUrl(url);
+    console.log('[External API] Google Safe Browsing succeeded');
+  } catch (error) {
+    console.log('[External API] Google Safe Browsing failed:', error.message);
+    gsbResult = { error: error.message };
+  }
+
+  // If GSB failed, try VirusTotal as fallback
+  if (gsbResult?.error) {
+    try {
+      console.log('[External API] Falling back to VirusTotal...');
+      vtResult = await scanWithVirusTotalUrl(url);
+      console.log('[External API] VirusTotal succeeded');
+    } catch (error) {
+      console.log('[External API] VirusTotal failed:', error.message);
+      vtResult = { error: error.message };
+    }
+  }
+
+  // If both failed, return null to trigger keyword-only mode
+  if (gsbResult?.error && vtResult?.error) {
+    console.log('[External API] Both APIs failed, using keyword-only detection');
+    return null;
+  }
 
   return {
-    virustotal: vtResult.status === 'fulfilled' ? vtResult.value : { error: vtResult.reason?.message || String(vtResult.reason) },
-    googleSafeBrowsing: gsbResult.status === 'fulfilled' ? gsbResult.value : { error: gsbResult.reason?.message || String(gsbResult.reason) },
+    googleSafeBrowsing: gsbResult?.error ? { error: gsbResult.error } : gsbResult,
+    virustotal: vtResult?.error ? { error: vtResult.error } : vtResult,
+    primarySource: gsbResult?.error ? 'virustotal' : 'google-safe-browsing',
   };
 }
 

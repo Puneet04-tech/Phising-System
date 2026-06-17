@@ -1,7 +1,17 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ShieldCheck, MailWarning, Link as LinkIcon } from 'lucide-react';
+import { ShieldCheck, MailWarning, Link as LinkIcon, Settings } from 'lucide-react';
+import { getUserRole } from '../lib/auth';
 
 export default function HomePage() {
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    setUserRole(getUserRole());
+  }, []);
+
   return (
     <div className="flex flex-col items-center">
       {/* Hero Section */}
@@ -23,6 +33,12 @@ export default function HomePage() {
               <Link href="/dashboard" className="inline-flex h-11 items-center justify-center rounded-md border border-input bg-background px-8 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
                 Try the Scanner
               </Link>
+              {userRole === 'admin' && (
+                <Link href="/admin" className="inline-flex h-11 items-center justify-center rounded-md border border-input bg-background px-8 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+                  <Settings className="w-4 h-4 mr-2" />
+                  Admin Panel
+                </Link>
+              )}
             </div>
           </div>
         </div>

@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { getToken, clearToken } from '../../lib/auth';
-import { LogOut, ShieldAlert, ShieldCheck, Mail, Link as LinkIcon, RefreshCcw, Loader2 } from 'lucide-react';
+import { getToken, clearToken, getUserRole } from '../../lib/auth';
+import { LogOut, ShieldAlert, ShieldCheck, Mail, Link as LinkIcon, RefreshCcw, Loader2, Settings } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -12,6 +13,7 @@ export default function DashboardClient() {
   const router = useRouter();
 
   const [token, setTokenState] = useState(null);
+  const [userRole, setUserRole] = useState(null);
   const [history, setHistory] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,6 +32,7 @@ export default function DashboardClient() {
       return;
     }
     setTokenState(t);
+    setUserRole(getUserRole());
   }, [router]);
 
   async function loadData() {
@@ -116,16 +119,27 @@ export default function DashboardClient() {
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground mt-1">Analyze URLs and emails, and view your scan history.</p>
         </div>
-        <button
-          onClick={() => {
-            clearToken();
-            router.replace('/login');
-          }}
-          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 border"
-        >
-          <LogOut className="w-4 h-4 mr-2" />
-          Logout
-        </button>
+        <div className="flex gap-2">
+          {userRole === 'admin' && (
+            <button
+              onClick={() => router.push('/admin')}
+              className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 border"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Admin Panel
+            </button>
+          )}
+          <button
+            onClick={() => {
+              clearToken();
+              router.replace('/login');
+            }}
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 border"
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </button>
+        </div>
       </div>
 
       {/* Metrics Row */}
@@ -146,6 +160,54 @@ export default function DashboardClient() {
           <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 border-b-4 border-b-red-500">
             <div className="text-sm font-medium text-muted-foreground">Malicious</div>
             <div className="text-3xl font-bold mt-2 text-red-600">{stats.maliciousCount ?? 0}</div>
+          </div>
+        </div>
+      )}
+
+      {/* Analytics Charts */}
+      {stats && stats.totalScans > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6">
+            <h3 className="text-lg font-semibold mb-4">Threat Distribution</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: 'Safe', value: stats.safeCount, color: '#22c55e' },
+                    { name: 'Suspicious', value: stats.suspiciousCount, color: '#eab308' },
+                    { name: 'Malicious', value: stats.maliciousCount, color: '#ef4444' }
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
+                  <Cell fill="#22c55e" />
+                  <Cell fill="#eab308" />
+                  <Cell fill="#ef4444" />
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6">
+            <h3 className="text-lg font-semibold mb-4">Scan Statistics</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={[
+                { name: 'Safe', value: stats.safeCount, color: '#22c55e' },
+                { name: 'Suspicious', value: stats.suspiciousCount, color: '#eab308' },
+                { name: 'Malicious', value: stats.maliciousCount, color: '#ef4444' }
+              ]}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="value" fill="#3b82f6" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       )}

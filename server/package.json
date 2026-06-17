@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "type": "commonjs",
   "main": "src/server.js",
-  "scripts": {
-    "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
-  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "axios": "^1.7.0",
@@ -28,6 +24,8 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "create-admin": "node src/scripts/createAdmin.js",
+    "test-api-keys": "node src/scripts/testApiKeys.js"
   }
 }

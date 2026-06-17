@@ -52,6 +52,7 @@ To ensure both members get full-stack exposure and an equal workload, tasks are 
 * **Monitor Reports:** Systematically track, update, and review user security report submissions across the platform.
 * **Manage Suspicious Keywords:** Direct UI controls allowing admins to add, delete, or update high-risk vocabulary terms directly in MongoDB.
 * **View System Analytics:** Providing high-level metric views regarding total global threats neutralized and server traffic statistics.
+* **Admin Dashboard:** Dedicated admin interface with overview analytics, user management, and keyword controls.
 
 ---
 
@@ -188,6 +189,47 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api
 ```
 
 Launch the Next.js local development server:
+
+```bash
+npm run dev
+
+```
+
+### 4. Creating an Admin User
+
+After setting up the application, you'll need to create an admin user to access the admin dashboard:
+
+1. **Sign up** a new user account through the frontend at `http://localhost:3000/signup`
+2. **Promote the user to admin** by running the following command in the server directory:
+
+```bash
+npm run create-admin <user-email>
+```
+
+Example:
+```bash
+npm run create-admin admin@example.com
+```
+
+This will update the user's role to 'admin', granting access to the admin dashboard at `/admin`.
+
+### 4. Creating an Admin User
+
+After setting up the application, you'll need to create an admin user to access the admin dashboard:
+
+1. **Sign up** a new user account through the frontend at `http://localhost:3000/signup`
+2. **Promote the user to admin** by running the following command in the server directory:
+
+```bash
+npm run create-admin <user-email>
+```
+
+Example:
+```bash
+npm run create-admin admin@example.com
+```
+
+This will update the user's role to 'admin', granting access to the admin dashboard at `/admin`.
 
 ```bash
 npm run dev
