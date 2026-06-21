@@ -271,12 +271,36 @@ export default function AdminDashboard() {
 
   return (
     <div style={{ background: 'transparent' }} className="min-h-screen">
-      <div className="relative container mx-auto px-4 md:px-6 py-8 max-w-7xl">
+      {/* Red Glow Overlay */}
+      <div 
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{
+          background: 'radial-gradient(ellipse at 80% 20%, rgba(255, 0, 85,.12) 0%, transparent 50%)',
+          filter: 'blur(80px)',
+          opacity: 0.15
+        }}
+      />
+      <div 
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{
+          background: 'radial-gradient(ellipse at 20% 80%, rgba(255, 0, 85,.1) 0%, transparent 50%)',
+          filter: 'blur(100px)',
+          opacity: 0.1
+        }}
+      />
+      
+      <div className="relative container mx-auto px-4 md:px-6 py-8 max-w-7xl z-10">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: GRADIENTS.primary, boxShadow: '0 0 20px rgba(0, 245, 212,.3)' }}>
+              <div 
+                className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110"
+                style={{ 
+                  background: GRADIENTS.primary, 
+                  boxShadow: '0 0 30px rgba(0, 245, 212,.5), 0 0 60px rgba(0, 245, 212,.3)' 
+                }}
+              >
                 <Crown className="w-5 h-5" style={{ color: '#080B10' }} />
               </div>
               <h1 className="text-3xl font-bold" style={{ color: '#E2E8F0' }}>
@@ -292,8 +316,12 @@ export default function AdminDashboard() {
               clearToken();
               router.replace('/login');
             }}
-            className="group relative px-4 py-2.5 rounded-xl transition-all duration-300"
-            style={{ background: 'rgba(255, 0, 85,.1)', border: '1px solid rgba(255, 0, 85,.3)' }}
+            className="group relative px-4 py-2.5 rounded-xl transition-all duration-300 hover:scale-105"
+            style={{ 
+              background: 'rgba(255, 0, 85,.15)', 
+              border: '1px solid rgba(255, 0, 85,.4)',
+              boxShadow: '0 0 20px rgba(255, 0, 85,.2)'
+            }}
           >
             <div className="flex items-center gap-2">
               <LogOut className="w-4 h-4 group-hover:scale-110 transition-transform" style={{ color: '#FF0055' }} />

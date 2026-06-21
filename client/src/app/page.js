@@ -162,6 +162,24 @@ export default function HomePage() {
       <section className="relative min-h-[92vh] flex items-center overflow-hidden">
         {/* Premium Dot grid */}
         <div className="dot-grid absolute inset-0 opacity-30 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, rgba(0, 245, 212,.15) 1px, transparent 1px)' }} />
+        
+        {/* Red Glow Overlay */}
+        <div 
+          className="absolute inset-0 opacity-15 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 85% 15%, rgba(255, 0, 85,.2) 0%, transparent 50%)',
+            filter: 'blur(80px)',
+            animation: 'premium-float 10s ease-in-out infinite'
+          }}
+        />
+        <div 
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 15% 85%, rgba(255, 0, 85,.15) 0%, transparent 50%)',
+            filter: 'blur(100px)',
+            animation: 'premium-float 12s ease-in-out infinite reverse'
+          }}
+        />
 
         <div className="container mx-auto px-6 max-w-7xl relative z-10 py-20">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -257,8 +275,43 @@ export default function HomePage() {
 
       {/* ═══════════════════════════ STATS ══════════════════════════ */}
       <section className="relative">
-        <div className="container mx-auto px-6 max-w-5xl py-10">
-          <div className="rounded-2xl p-8" style={{ background: '#111622', border: '1px solid rgba(0, 245, 212,.2)', boxShadow:'0 0 30px rgba(0, 245, 212,.1)' }}>
+        {/* Red Glow Overlay */}
+        <div 
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 50%, rgba(255, 0, 85,.15) 0%, transparent 60%)',
+            filter: 'blur(60px)'
+          }}
+        />
+        <div className="container mx-auto px-6 max-w-5xl py-10 relative z-10">
+          <div 
+            className="rounded-2xl p-8 relative overflow-hidden"
+            style={{ 
+              background: 'linear-gradient(135deg, rgba(17, 22, 34, 0.95) 0%, rgba(8, 11, 16, 0.98) 100%)', 
+              border: '2px solid rgba(0, 245, 212,.3)', 
+              boxShadow: `
+                0 0 40px rgba(0, 245, 212,.2),
+                0 0 80px rgba(0, 245, 212,.1),
+                0 0 120px rgba(0, 245, 212,.05),
+                inset 0 0 60px rgba(0, 245, 212,.05)
+              `
+            }}
+          >
+            {/* Premium Glow Effect */}
+            <div 
+              className="absolute inset-0 opacity-30"
+              style={{
+                background: 'radial-gradient(circle at 30% 30%, rgba(0, 245, 212,.4) 0%, transparent 50%)',
+                filter: 'blur(20px)'
+              }}
+            />
+            <div 
+              className="absolute inset-0 opacity-20"
+              style={{
+                background: 'radial-gradient(circle at 70% 70%, rgba(255, 0, 85,.3) 0%, transparent 50%)',
+                filter: 'blur(25px)'
+              }}
+            />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {stats.map((s, i) => (
                 <div key={i} className="flex flex-col items-center text-center">
@@ -275,7 +328,15 @@ export default function HomePage() {
 
       {/* ═══════════════════════════ FEATURES ═══════════════════════ */}
       <section className="py-24 md:py-32 relative">
-        <div className="container mx-auto px-6 max-w-6xl">
+        {/* Red Glow Overlay */}
+        <div 
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 75% 25%, rgba(255, 0, 85,.12) 0%, transparent 50%)',
+            filter: 'blur(70px)'
+          }}
+        />
+        <div className="container mx-auto px-6 max-w-6xl relative z-10">
           <div className="text-center mb-16 space-y-4">
             <div className="section-tag mx-auto" style={{ width:'fit-content', background: 'rgba(0, 245, 212,.08)', borderColor: 'rgba(0, 245, 212,.2)', color: 'rgba(226, 232, 240,.6)' }}>
               <Zap className="w-3 h-3" style={{ color: '#00F5D4' }} /> What we detect
@@ -290,15 +351,53 @@ export default function HomePage() {
 
           <div className="grid gap-6 md:grid-cols-3">
             {features.map((f, i) => (
-              <div key={i} className="rounded-2xl p-8 hover:shadow-xl transition-all duration-300 group cursor-default" style={{ background: '#111622', border: '1px solid rgba(0, 245, 212,.2)', boxShadow:'0 0 20px rgba(0, 245, 212,.05)' }}>
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-5" style={{ background: 'rgba(0, 245, 212,.15)', border: '1px solid rgba(0, 245, 212,.3)', boxShadow: `0 0 30px rgba(0, 245, 212,.2)` }}>
-                  <f.icon className="w-7 h-7" style={{ color: '#00F5D4' }} />
+              <div 
+                key={i} 
+                className="rounded-2xl p-8 hover:scale-105 transition-all duration-300 group cursor-default relative overflow-hidden"
+                style={{ 
+                  background: 'linear-gradient(135deg, rgba(17, 22, 34, 0.95) 0%, rgba(8, 11, 16, 0.98) 100%)', 
+                  border: '2px solid rgba(0, 245, 212,.3)', 
+                  boxShadow: `
+                    0 0 40px rgba(0, 245, 212,.2),
+                    0 0 80px rgba(0, 245, 212,.1),
+                    0 0 120px rgba(0, 245, 212,.05),
+                    inset 0 0 60px rgba(0, 245, 212,.05)
+                  `
+                }}
+              >
+                {/* Premium Glow Effect */}
+                <div 
+                  className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-500"
+                  style={{
+                    background: 'radial-gradient(circle at 30% 30%, rgba(0, 245, 212,.4) 0%, transparent 50%)',
+                    filter: 'blur(20px)'
+                  }}
+                />
+                <div 
+                  className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500"
+                  style={{
+                    background: 'radial-gradient(circle at 70% 70%, rgba(255, 0, 85,.3) 0%, transparent 50%)',
+                    filter: 'blur(25px)'
+                  }}
+                />
+                
+                <div className="relative z-10">
+                  <div 
+                    className="w-14 h-14 rounded-xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110"
+                    style={{ 
+                      background: 'rgba(0, 245, 212,.15)', 
+                      border: '1px solid rgba(0, 245, 212,.3)', 
+                      boxShadow: `0 0 30px rgba(0, 245, 212,.2), 0 0 60px rgba(0, 245, 212,.1)` 
+                    }}
+                  >
+                    <f.icon className="w-7 h-7" style={{ color: '#00F5D4' }} />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3" style={{ color: '#E2E8F0' }}>{f.title}</h3>
+                  <p className="text-sm leading-relaxed mb-5" style={{ color: 'rgba(226, 232, 240,.65)' }}>{f.desc}</p>
+                  <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-sm font-semibold transition-all group-hover:gap-2.5" style={{ color: '#00F5D4' }}>
+                    Try it <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                  </Link>
                 </div>
-                <h3 className="text-xl font-bold mb-3" style={{ color: '#E2E8F0' }}>{f.title}</h3>
-                <p className="text-sm leading-relaxed mb-5" style={{ color: 'rgba(226, 232, 240,.65)' }}>{f.desc}</p>
-                <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-sm font-semibold transition-all group-hover:gap-2.5" style={{ color: '#00F5D4' }}>
-                  Try it <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                </Link>
               </div>
             ))}
           </div>
@@ -307,7 +406,15 @@ export default function HomePage() {
 
       {/* ═══════════════════════════ HOW IT WORKS ═══════════════════ */}
       <section className="py-24 md:py-32 relative">
-        <div className="container mx-auto px-6 max-w-5xl">
+        {/* Red Glow Overlay */}
+        <div 
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 25% 75%, rgba(255, 0, 85,.12) 0%, transparent 50%)',
+            filter: 'blur(70px)'
+          }}
+        />
+        <div className="container mx-auto px-6 max-w-5xl relative z-10">
           <div className="text-center mb-16 space-y-4">
             <div className="section-tag mx-auto" style={{ width:'fit-content', background: 'rgba(0, 245, 212,.08)', borderColor: 'rgba(0, 245, 212,.2)', color: 'rgba(226, 232, 240,.6)' }}>
               <TrendingUp className="w-3 h-3" style={{ color: '#00F5D4' }} /> How it works
@@ -319,18 +426,49 @@ export default function HomePage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {steps.map((s, i) => (
-              <div key={i} className="relative rounded-2xl p-6 hover:shadow-xl transition-all duration-300" style={{ background: '#111622', border: '1px solid rgba(0, 245, 212,.2)', boxShadow:'0 0 20px rgba(0, 245, 212,.05)' }}>
-                <div
-                  className="text-5xl font-black mb-4 leading-none"
-                  style={{ background: 'linear-gradient(135deg,#00F5D4,#00D4AA)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}
-                >
-                  {s.n}
+              <div 
+                key={i} 
+                className="relative rounded-2xl p-6 hover:scale-105 transition-all duration-300 group overflow-hidden"
+                style={{ 
+                  background: 'linear-gradient(135deg, rgba(17, 22, 34, 0.95) 0%, rgba(8, 11, 16, 0.98) 100%)', 
+                  border: '2px solid rgba(0, 245, 212,.3)', 
+                  boxShadow: `
+                    0 0 40px rgba(0, 245, 212,.2),
+                    0 0 80px rgba(0, 245, 212,.1),
+                    0 0 120px rgba(0, 245, 212,.05),
+                    inset 0 0 60px rgba(0, 245, 212,.05)
+                  `
+                }}
+              >
+                {/* Premium Glow Effect */}
+                <div 
+                  className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-500"
+                  style={{
+                    background: 'radial-gradient(circle at 30% 30%, rgba(0, 245, 212,.4) 0%, transparent 50%)',
+                    filter: 'blur(20px)'
+                  }}
+                />
+                <div 
+                  className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500"
+                  style={{
+                    background: 'radial-gradient(circle at 70% 70%, rgba(255, 0, 85,.3) 0%, transparent 50%)',
+                    filter: 'blur(25px)'
+                  }}
+                />
+                
+                <div className="relative z-10">
+                  <div
+                    className="text-5xl font-black mb-4 leading-none"
+                    style={{ background: 'linear-gradient(135deg,#00F5D4,#00D4AA)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}
+                  >
+                    {s.n}
+                  </div>
+                  <h3 className="font-bold text-base mb-2" style={{ color: '#E2E8F0' }}>{s.title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: 'rgba(226, 232, 240,.65)' }}>{s.desc}</p>
+                  {i < steps.length - 1 && (
+                    <div className="hidden lg:block absolute top-1/2 -right-3 w-6 h-6 z-10" style={{ color: 'rgba(0, 245, 212,.3)' }}>→</div>
+                  )}
                 </div>
-                <h3 className="font-bold text-base mb-2" style={{ color: '#E2E8F0' }}>{s.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(226, 232, 240,.65)' }}>{s.desc}</p>
-                {i < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-3 w-6 h-6 z-10" style={{ color: 'rgba(0, 245, 212,.3)' }}>→</div>
-                )}
               </div>
             ))}
           </div>

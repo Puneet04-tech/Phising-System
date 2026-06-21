@@ -38,6 +38,24 @@ export default function LoginPage() {
         className="hidden lg:flex lg:w-[45%] flex-col justify-between p-14 relative overflow-hidden"
         style={{ background: '#111622' }}
       >
+        {/* Red Glow Overlay */}
+        <div 
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 75% 25%, rgba(255, 0, 85,.15) 0%, transparent 50%)',
+            filter: 'blur(80px)',
+            opacity: 0.3
+          }}
+        />
+        <div 
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 25% 75%, rgba(255, 0, 85,.12) 0%, transparent 50%)',
+            filter: 'blur(100px)',
+            opacity: 0.2
+          }}
+        />
+        
         {/* Dot grid overlay */}
         <div className="absolute inset-0 pointer-events-none" style={{
           backgroundImage: 'radial-gradient(circle, rgba(0, 245, 212, .08) 1px, transparent 1px)',
@@ -65,6 +83,10 @@ export default function LoginPage() {
         {/* Glow blob */}
         <div className="absolute pointer-events-none" style={{ top:'30%', left:'20%', width:'300px', height:'300px',
           background:'radial-gradient(circle,rgba(0, 245, 212,.15) 0%,transparent 70%)', filter:'blur(40px)' }} />
+        
+        {/* Red glow blob */}
+        <div className="absolute pointer-events-none" style={{ top:'60%', right:'15%', width:'250px', height:'250px',
+          background:'radial-gradient(circle,rgba(255, 0, 85,.12) 0%,transparent 70%)', filter:'blur(50px)', animation:'premium-float 8s ease-in-out infinite' }} />
 
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3">

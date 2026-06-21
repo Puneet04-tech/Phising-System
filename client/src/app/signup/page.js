@@ -47,8 +47,26 @@ export default function SignupPage() {
     <div className="min-h-screen flex" style={{ background: 'transparent' }}>
 
       {/* ── Left Form Panel ────────────────────────────────── */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-[420px]">
+      <div className="flex-1 flex items-center justify-center px-6 py-12 relative">
+        {/* Red Glow Overlay */}
+        <div 
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 80% 20%, rgba(255, 0, 85,.1) 0%, transparent 50%)',
+            filter: 'blur(80px)',
+            opacity: 0.2
+          }}
+        />
+        <div 
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 20% 80%, rgba(255, 0, 85,.08) 0%, transparent 50%)',
+            filter: 'blur(100px)',
+            opacity: 0.15
+          }}
+        />
+        
+        <div className="w-full max-w-[420px] relative z-10">
 
           {/* Mobile logo */}
           <div className="lg:hidden mb-8 flex items-center gap-2.5">
@@ -60,8 +78,8 @@ export default function SignupPage() {
 
           {/* Header */}
           <div className="mb-8 anim-fade-up">
-            <div className="mb-4 w-11 h-11 rounded-2xl flex items-center justify-center"
-              style={{ background:'rgba(0, 245, 212,.15)', border:'1px solid rgba(0, 245, 212,.3)', boxShadow:'0 0 30px rgba(0, 245, 212,.2)' }}>
+            <div className="mb-4 w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110"
+              style={{ background:'rgba(0, 245, 212,.15)', border:'1px solid rgba(0, 245, 212,.3)', boxShadow:'0 0 30px rgba(0, 245, 212,.2), 0 0 60px rgba(0, 245, 212,.1)' }}>
               <ShieldAlert className="w-5 h-5" style={{ color: '#00F5D4' }} />
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight mb-2" style={{ color:'#E2E8F0', letterSpacing:'-0.03em' }}>

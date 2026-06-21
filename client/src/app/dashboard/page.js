@@ -54,17 +54,85 @@ function ThreatBadge({ status }) {
 }
 
 function StatCard({ label, value, icon: Icon, color, gradient, delay }) {
+  const isRedCard = color === '#FF0055' || color === COLORS.danger;
+  
   return (
     <div 
-      className="relative overflow-hidden rounded-2xl transition-all duration-300 group"
-      style={{ background: '#111622', border: '1px solid rgba(0, 245, 212,.2)', boxShadow: '0 0 20px rgba(0, 245, 212,.05)', animation: `fadeInUp 0.6s ease-out ${delay}s both` }}
+      className="relative overflow-hidden rounded-2xl transition-all duration-300 group hover:scale-105"
+      style={{ 
+        background: 'linear-gradient(135deg, rgba(17, 22, 34, 0.95) 0%, rgba(8, 11, 16, 0.98) 100%)', 
+        border: `2px solid ${isRedCard ? 'rgba(255, 0, 85,.4)' : 'rgba(0, 245, 212,.3)'}`, 
+        boxShadow: isRedCard ? `
+          0 0 40px rgba(255, 0, 85,.25),
+          0 0 80px rgba(255, 0, 85,.15),
+          0 0 120px rgba(255, 0, 85,.08),
+          inset 0 0 60px rgba(255, 0, 85,.08)
+        ` : `
+          0 0 40px rgba(0, 245, 212,.2),
+          0 0 80px rgba(0, 245, 212,.1),
+          0 0 120px rgba(0, 245, 212,.05),
+          inset 0 0 60px rgba(0, 245, 212,.05)
+        `,
+        animation: `fadeInUp 0.6s ease-out ${delay}s both`
+      }}
     >
-      <div className="absolute top-0 right-0 w-32 h-32 opacity-10 group-hover:opacity-20 transition-opacity">
+      {/* Premium Glow Effect */}
+      <div 
+        className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-500"
+        style={{
+          background: `radial-gradient(circle at 30% 30%, ${isRedCard ? 'rgba(255, 0, 85,.5)' : color + '40'} 0%, transparent 50%)`,
+          filter: 'blur(20px)'
+        }}
+      />
+      <div 
+        className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500"
+        style={{
+          background: `radial-gradient(circle at 70% 70%, ${isRedCard ? 'rgba(255, 0, 85,.4)' : color + '30'} 0%, transparent 50%)`,
+          filter: 'blur(25px)'
+        }}
+      />
+      
+      {/* Animated Glow Ring */}
+      <div 
+        className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background: `conic-gradient(from 0deg, transparent, ${isRedCard ? 'rgba(255, 0, 85,.7)' : color + '60'}, transparent)`,
+          animation: 'spin 3s linear infinite',
+          filter: 'blur(8px)'
+        }}
+      />
+      
+      {/* Inner Glow */}
+      <div 
+        className="absolute inset-0 rounded-2xl opacity-40"
+        style={{
+          background: `radial-gradient(circle at center, ${isRedCard ? 'rgba(255, 0, 85,.3)' : color + '20'} 0%, transparent 70%)`,
+          filter: 'blur(15px)'
+        }}
+      />
+      
+      <div className="absolute top-0 right-0 w-32 h-32 opacity-10 group-hover:opacity-30 transition-opacity">
         <Icon className="w-full h-full" style={{ color: color }} />
       </div>
       <div className="relative p-6">
         <div className="flex items-start justify-between mb-4">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: gradient, boxShadow: '0 0 20px rgba(0, 245, 212,.3)' }}>
+          <div 
+            className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+            style={{ 
+              background: gradient, 
+              boxShadow: isRedCard ? `
+                0 0 30px rgba(255, 0, 85,.6),
+                0 0 60px rgba(255, 0, 85,.4),
+                0 0 90px rgba(255, 0, 85,.25),
+                inset 0 0 20px rgba(255, 0, 85,.35)
+              ` : `
+                0 0 30px rgba(0, 245, 212,.5),
+                0 0 60px rgba(0, 245, 212,.3),
+                0 0 90px rgba(0, 245, 212,.2),
+                inset 0 0 20px rgba(0, 245, 212,.3)
+              `
+            }}
+          >
             <Icon className="w-6 h-6" style={{ color: '#080B10' }} />
           </div>
           <div className="flex items-center gap-1 text-xs font-medium" style={{ color: 'rgba(226, 232, 240,.4)' }}>
@@ -74,7 +142,15 @@ function StatCard({ label, value, icon: Icon, color, gradient, delay }) {
         </div>
         <div className="space-y-1">
           <p className="text-sm font-medium" style={{ color: 'rgba(226, 232, 240,.5)' }}>{label}</p>
-          <p className="text-3xl font-bold" style={{ color: color }}>{value}</p>
+          <p 
+            className="text-3xl font-bold transition-all duration-300 group-hover:scale-110"
+            style={{ 
+              color: color,
+              textShadow: isRedCard ? `0 0 20px rgba(255, 0, 85,.9), 0 0 40px rgba(255, 0, 85,.7)` : `0 0 20px ${color}80, 0 0 40px ${color}60`
+            }}
+          >
+            {value}
+          </p>
         </div>
       </div>
     </div>
@@ -284,6 +360,11 @@ export default function DashboardPage() {
     const flaggedKeywords = scan.flaggedKeywords || [];
     const content = scan.content || '';
     const scanType = scan.scanType || 'Unknown';
+    const keywordCategories = scan.keywordCategories || [];
+    const severityCounts = scan.severityCounts || {};
+    const externalApiUsed = scan.externalApiUsed || false;
+    const primarySource = scan.primarySource || 'keyword-only';
+    const usedFallbackKeywords = scan.usedFallbackKeywords;
 
     let report = `
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -302,6 +383,14 @@ Risk Score: ${riskScore}%
 Threat Status: ${threatStatus.toUpperCase()}
 
 ═════════════════════════════════════════════════════════════════════════════════
+                           DETECTION METHODOLOGY
+═════════════════════════════════════════════════════════════════════════════════
+
+External APIs Used: ${externalApiUsed ? 'YES' : 'NO (Keyword Analysis Only)'}
+Primary Detection Source: ${primarySource === 'virustotal' ? 'VirusTotal (70+ Security Engines)' : primarySource === 'google-safe-browsing' ? 'Google Safe Browsing' : 'Advanced Keyword Analysis'}
+Database Keywords: ${usedFallbackKeywords ? 'FALLBACK MODE (Hardcoded)' : 'ACTIVE (Database-Driven)'}
+
+═════════════════════════════════════════════════════════════════════════════════
                               ANALYZED CONTENT
 ═════════════════════════════════════════════════════════════════════════════════
 
@@ -315,7 +404,23 @@ RISK ASSESSMENT
 ───────────────────────────────────────────────────────────────────────────────
 Overall Risk Level: ${riskScore >= 70 ? 'HIGH' : riskScore >= 40 ? 'MEDIUM' : 'LOW'}
 Confidence Score: ${Math.min(95, riskScore + 5)}%
-Analysis Engine: Hybrid AI (Regex Rules + External APIs)
+Analysis Engine: Hybrid AI (Regex Rules + External APIs + Pattern Matching)
+
+═════════════════════════════════════════════════════════════════════════════════
+                         THREAT CATEGORIES DETECTED
+═════════════════════════════════════════════════════════════════════════════════
+
+${keywordCategories.length > 0 ? keywordCategories.map((cat, i) => `${i + 1}. ${cat.toUpperCase()}`).join('\n') : 'No specific threat categories identified'}
+
+═════════════════════════════════════════════════════════════════════════════════
+                            SEVERITY BREAKDOWN
+═════════════════════════════════════════════════════════════════════════════════
+
+${severityCounts.critical ? `Critical Severity: ${severityCounts.critical} indicators` : ''}
+${severityCounts.high ? `High Severity: ${severityCounts.high} indicators` : ''}
+${severityCounts.medium ? `Medium Severity: ${severityCounts.medium} indicators` : ''}
+${severityCounts.low ? `Low Severity: ${severityCounts.low} indicators` : ''}
+${Object.keys(severityCounts).length === 0 ? 'No severity breakdown available' : ''}
 
 ═════════════════════════════════════════════════════════════════════════════════
                             FLAGGED INDICATORS
@@ -556,10 +661,56 @@ For questions or support, contact your system administrator.
         {stats && (stats.totalScans ?? 0) > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* Pie Chart */}
-            <div className="rounded-2xl p-6 hover:shadow-xl transition-all duration-300" style={{ background: '#111622', border: '1px solid rgba(0, 245, 212,.2)', boxShadow: '0 0 20px rgba(0, 245, 212,.05)' }}>
-              <div className="flex items-center justify-between mb-6">
+            <div 
+              className="rounded-2xl p-6 hover:scale-105 transition-all duration-300 relative overflow-hidden group"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(17, 22, 34, 0.95) 0%, rgba(8, 11, 16, 0.98) 100%)', 
+                border: '2px solid rgba(0, 245, 212,.3)', 
+                boxShadow: `
+                  0 0 40px rgba(0, 245, 212,.2),
+                  0 0 80px rgba(0, 245, 212,.1),
+                  0 0 120px rgba(0, 245, 212,.05),
+                  inset 0 0 60px rgba(0, 245, 212,.05)
+                `
+              }}
+            >
+              {/* Premium Glow Effect */}
+              <div 
+                className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-500"
+                style={{
+                  background: 'radial-gradient(circle at 30% 30%, rgba(0, 245, 212,.4) 0%, transparent 50%)',
+                  filter: 'blur(20px)'
+                }}
+              />
+              <div 
+                className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500"
+                style={{
+                  background: 'radial-gradient(circle at 70% 70%, rgba(0, 245, 212,.3) 0%, transparent 50%)',
+                  filter: 'blur(25px)'
+                }}
+              />
+              <div 
+                className="absolute inset-0 rounded-2xl opacity-40"
+                style={{
+                  background: 'radial-gradient(circle at center, rgba(0, 245, 212,.2) 0%, transparent 70%)',
+                  filter: 'blur(15px)'
+                }}
+              />
+              
+              <div className="flex items-center justify-between mb-6 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: GRADIENTS.primary, boxShadow: '0 0 20px rgba(0, 245, 212,.3)' }}>
+                  <div 
+                    className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                    style={{ 
+                      background: GRADIENTS.primary, 
+                      boxShadow: `
+                        0 0 30px rgba(0, 245, 212,.5),
+                        0 0 60px rgba(0, 245, 212,.3),
+                        0 0 90px rgba(0, 245, 212,.2),
+                        inset 0 0 20px rgba(0, 245, 212,.3)
+                      `
+                    }}
+                  >
                     <Target className="w-5 h-5" style={{ color: '#080B10' }} />
                   </div>
                   <div>
@@ -579,10 +730,56 @@ For questions or support, contact your system administrator.
             </div>
 
             {/* Bar Chart */}
-            <div className="rounded-2xl p-6 hover:shadow-xl transition-all duration-300" style={{ background: '#111622', border: '1px solid rgba(0, 245, 212,.2)', boxShadow: '0 0 20px rgba(0, 245, 212,.05)' }}>
-              <div className="flex items-center justify-between mb-6">
+            <div 
+              className="rounded-2xl p-6 hover:scale-105 transition-all duration-300 relative overflow-hidden group"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(17, 22, 34, 0.95) 0%, rgba(8, 11, 16, 0.98) 100%)', 
+                border: '2px solid rgba(0, 245, 212,.3)', 
+                boxShadow: `
+                  0 0 40px rgba(0, 245, 212,.2),
+                  0 0 80px rgba(0, 245, 212,.1),
+                  0 0 120px rgba(0, 245, 212,.05),
+                  inset 0 0 60px rgba(0, 245, 212,.05)
+                `
+              }}
+            >
+              {/* Premium Glow Effect */}
+              <div 
+                className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-500"
+                style={{
+                  background: 'radial-gradient(circle at 30% 30%, rgba(0, 245, 212,.4) 0%, transparent 50%)',
+                  filter: 'blur(20px)'
+                }}
+              />
+              <div 
+                className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500"
+                style={{
+                  background: 'radial-gradient(circle at 70% 70%, rgba(0, 245, 212,.3) 0%, transparent 50%)',
+                  filter: 'blur(25px)'
+                }}
+              />
+              <div 
+                className="absolute inset-0 rounded-2xl opacity-40"
+                style={{
+                  background: 'radial-gradient(circle at center, rgba(0, 245, 212,.2) 0%, transparent 70%)',
+                  filter: 'blur(15px)'
+                }}
+              />
+              
+              <div className="flex items-center justify-between mb-6 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: GRADIENTS.secondary, boxShadow: '0 0 20px rgba(0, 245, 212,.3)' }}>
+                  <div 
+                    className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                    style={{ 
+                      background: GRADIENTS.secondary, 
+                      boxShadow: `
+                        0 0 30px rgba(0, 245, 212,.5),
+                        0 0 60px rgba(0, 245, 212,.3),
+                        0 0 90px rgba(0, 245, 212,.2),
+                        inset 0 0 20px rgba(0, 245, 212,.3)
+                      `
+                    }}
+                  >
                     <BarChart3 className="w-5 h-5" style={{ color: '#080B10' }} />
                   </div>
                   <div>
@@ -591,7 +788,7 @@ For questions or support, contact your system administrator.
                   </div>
                 </div>
               </div>
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer width="100%" height={250} className="relative z-10">
                 <BarChart data={chartData} barSize={50}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 245, 212,.1)" />
                   <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'rgba(226, 232, 240,.5)' }} axisLine={false} tickLine={false} />
@@ -608,10 +805,56 @@ For questions or support, contact your system administrator.
 
         {/* Reports Panel */}
         {showReports && (
-          <div className="rounded-2xl mb-8 overflow-hidden hover:shadow-xl transition-all duration-300" style={{ background: '#111622', border: '1px solid rgba(0, 245, 212,.2)', boxShadow: '0 0 20px rgba(0, 245, 212,.05)' }}>
-            <div className="flex justify-between items-center px-6 py-5" style={{ borderBottom: '1px solid rgba(0, 245, 212,.1)' }}>
+          <div 
+            className="rounded-2xl mb-8 overflow-hidden hover:scale-105 transition-all duration-300 relative group"
+            style={{ 
+              background: 'linear-gradient(135deg, rgba(17, 22, 34, 0.95) 0%, rgba(8, 11, 16, 0.98) 100%)', 
+              border: '2px solid rgba(0, 245, 212,.3)', 
+              boxShadow: `
+                0 0 40px rgba(0, 245, 212,.2),
+                0 0 80px rgba(0, 245, 212,.1),
+                0 0 120px rgba(0, 245, 212,.05),
+                inset 0 0 60px rgba(0, 245, 212,.05)
+              `
+            }}
+          >
+            {/* Premium Glow Effect */}
+            <div 
+              className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-500"
+              style={{
+                background: 'radial-gradient(circle at 30% 30%, rgba(0, 245, 212,.4) 0%, transparent 50%)',
+                filter: 'blur(20px)'
+              }}
+            />
+            <div 
+              className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500"
+              style={{
+                background: 'radial-gradient(circle at 70% 70%, rgba(0, 245, 212,.3) 0%, transparent 50%)',
+                filter: 'blur(25px)'
+              }}
+            />
+            <div 
+              className="absolute inset-0 rounded-2xl opacity-40"
+              style={{
+                background: 'radial-gradient(circle at center, rgba(0, 245, 212,.2) 0%, transparent 70%)',
+                filter: 'blur(15px)'
+              }}
+            />
+            
+            <div className="flex justify-between items-center px-6 py-5 relative z-10" style={{ borderBottom: '1px solid rgba(0, 245, 212,.1)' }}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: GRADIENTS.accent, boxShadow: '0 0 20px rgba(0, 245, 212,.3)' }}>
+                <div 
+                  className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                  style={{ 
+                    background: GRADIENTS.accent, 
+                    boxShadow: `
+                      0 0 30px rgba(0, 245, 212,.5),
+                      0 0 60px rgba(0, 245, 212,.3),
+                      0 0 90px rgba(0, 245, 212,.2),
+                      inset 0 0 20px rgba(0, 245, 212,.3)
+                    `
+                  }}
+                >
                   <FileText className="w-5 h-5" style={{ color: '#080B10' }} />
                 </div>
                 <div>
@@ -694,10 +937,56 @@ For questions or support, contact your system administrator.
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Scanner Panel */}
-          <div className="lg:col-span-1 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300" style={{ background: '#111622', border: '1px solid rgba(0, 245, 212,.2)', boxShadow: '0 0 20px rgba(0, 245, 212,.05)' }}>
-            <div className="px-6 py-5" style={{ borderBottom: '1px solid rgba(0, 245, 212,.1)' }}>
+          <div 
+            className="lg:col-span-1 rounded-2xl overflow-hidden hover:scale-105 transition-all duration-300 relative group"
+            style={{ 
+              background: 'linear-gradient(135deg, rgba(17, 22, 34, 0.95) 0%, rgba(8, 11, 16, 0.98) 100%)', 
+              border: '2px solid rgba(0, 245, 212,.3)', 
+              boxShadow: `
+                0 0 40px rgba(0, 245, 212,.2),
+                0 0 80px rgba(0, 245, 212,.1),
+                0 0 120px rgba(0, 245, 212,.05),
+                inset 0 0 60px rgba(0, 245, 212,.05)
+              `
+            }}
+          >
+            {/* Premium Glow Effect */}
+            <div 
+              className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-500"
+              style={{
+                background: 'radial-gradient(circle at 30% 30%, rgba(0, 245, 212,.4) 0%, transparent 50%)',
+                filter: 'blur(20px)'
+              }}
+            />
+            <div 
+              className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500"
+              style={{
+                background: 'radial-gradient(circle at 70% 70%, rgba(0, 245, 212,.3) 0%, transparent 50%)',
+                filter: 'blur(25px)'
+              }}
+            />
+            <div 
+              className="absolute inset-0 rounded-2xl opacity-40"
+              style={{
+                background: 'radial-gradient(circle at center, rgba(0, 245, 212,.2) 0%, transparent 70%)',
+                filter: 'blur(15px)'
+              }}
+            />
+            
+            <div className="px-6 py-5 relative z-10" style={{ borderBottom: '1px solid rgba(0, 245, 212,.1)' }}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: GRADIENTS.primary, boxShadow: '0 0 20px rgba(0, 245, 212,.3)' }}>
+                <div 
+                  className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                  style={{ 
+                    background: GRADIENTS.primary, 
+                    boxShadow: `
+                      0 0 30px rgba(0, 245, 212,.5),
+                      0 0 60px rgba(0, 245, 212,.3),
+                      0 0 90px rgba(0, 245, 212,.2),
+                      inset 0 0 20px rgba(0, 245, 212,.3)
+                    `
+                  }}
+                >
                   <ScanSearch className="w-5 h-5" style={{ color: '#080B10' }} />
                 </div>
                 <div>
@@ -707,7 +996,7 @@ For questions or support, contact your system administrator.
               </div>
             </div>
 
-            <div className="p-6 space-y-5">
+            <div className="p-6 space-y-5 relative z-10">
               {/* Tabs */}
               <div className="flex p-1 rounded-xl" style={{ background: 'rgba(0, 245, 212,.1)' }}>
                 {[
@@ -793,6 +1082,85 @@ For questions or support, contact your system administrator.
                   {scanResult.result.details && (
                     <p className="text-sm leading-relaxed" style={{ color: 'rgba(226, 232, 240,.6)' }}>{scanResult.result.details}</p>
                   )}
+                  
+                  {/* Enhanced Analysis Details */}
+                  <div className="space-y-2 pt-2" style={{ borderTop: '1px solid rgba(0, 245, 212,.1)' }}>
+                    <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'rgba(226, 232, 240,.5)' }}>Detection Details</span>
+                    
+                    {/* External API Status */}
+                    <div className="flex items-center justify-between py-2" style={{ borderBottom: '1px solid rgba(0, 245, 212,.05)' }}>
+                      <span className="text-xs" style={{ color: 'rgba(226, 232, 240,.5)' }}>External APIs Used</span>
+                      <span className={`text-xs font-semibold ${scanResult.externalApiUsed ? 'text-emerald-400' : 'text-amber-400'}`}>
+                        {scanResult.externalApiUsed ? 'Yes' : 'No (Keywords Only)'}
+                      </span>
+                    </div>
+                    
+                    {scanResult.primarySource && (
+                      <div className="flex items-center justify-between py-2" style={{ borderBottom: '1px solid rgba(0, 245, 212,.05)' }}>
+                        <span className="text-xs" style={{ color: 'rgba(226, 232, 240,.5)' }}>Primary Detection Source</span>
+                        <span className="text-xs font-semibold" style={{ color: '#00F5D4' }}>
+                          {scanResult.primarySource === 'virustotal' ? 'VirusTotal' : scanResult.primarySource === 'google-safe-browsing' ? 'Google Safe Browsing' : 'Keyword Analysis'}
+                        </span>
+                      </div>
+                    )}
+                    
+                    {scanResult.usedFallbackKeywords !== undefined && (
+                      <div className="flex items-center justify-between py-2" style={{ borderBottom: '1px solid rgba(0, 245, 212,.05)' }}>
+                        <span className="text-xs" style={{ color: 'rgba(226, 232, 240,.5)' }}>Database Keywords</span>
+                        <span className={`text-xs font-semibold ${scanResult.usedFallbackKeywords ? 'text-amber-400' : 'text-emerald-400'}`}>
+                          {scanResult.usedFallbackKeywords ? 'Fallback Used' : 'Active'}
+                        </span>
+                      </div>
+                    )}
+                    
+                    {/* Keyword Categories */}
+                    {scanResult.keywordCategories && scanResult.keywordCategories.length > 0 && (
+                      <div className="py-2" style={{ borderBottom: '1px solid rgba(0, 245, 212,.05)' }}>
+                        <span className="text-xs block mb-2" style={{ color: 'rgba(226, 232, 240,.5)' }}>Threat Categories Detected</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {scanResult.keywordCategories.map((cat, idx) => (
+                            <span key={idx} className="px-2 py-1 rounded text-xs font-medium" style={{ background: 'rgba(0, 245, 212,.1)', border: '1px solid rgba(0, 245, 212,.3)', color: '#00F5D4' }}>
+                              {cat}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Severity Counts */}
+                    {scanResult.severityCounts && (
+                      <div className="py-2">
+                        <span className="text-xs block mb-2" style={{ color: 'rgba(226, 232, 240,.5)' }}>Severity Breakdown</span>
+                        <div className="grid grid-cols-2 gap-2">
+                          {scanResult.severityCounts.critical > 0 && (
+                            <div className="flex items-center justify-between p-2 rounded" style={{ background: 'rgba(255, 0, 85,.1)', border: '1px solid rgba(255, 0, 85,.3)' }}>
+                              <span className="text-xs" style={{ color: 'rgba(226, 232, 240,.5)' }}>Critical</span>
+                              <span className="text-xs font-bold" style={{ color: '#FF0055' }}>{scanResult.severityCounts.critical}</span>
+                            </div>
+                          )}
+                          {scanResult.severityCounts.high > 0 && (
+                            <div className="flex items-center justify-between p-2 rounded" style={{ background: 'rgba(255, 100, 0,.1)', border: '1px solid rgba(255, 100, 0,.3)' }}>
+                              <span className="text-xs" style={{ color: 'rgba(226, 232, 240,.5)' }}>High</span>
+                              <span className="text-xs font-bold" style={{ color: '#FF6400' }}>{scanResult.severityCounts.high}</span>
+                            </div>
+                          )}
+                          {scanResult.severityCounts.medium > 0 && (
+                            <div className="flex items-center justify-between p-2 rounded" style={{ background: 'rgba(255, 200, 0,.1)', border: '1px solid rgba(255, 200, 0,.3)' }}>
+                              <span className="text-xs" style={{ color: 'rgba(226, 232, 240,.5)' }}>Medium</span>
+                              <span className="text-xs font-bold" style={{ color: '#FFC800' }}>{scanResult.severityCounts.medium}</span>
+                            </div>
+                          )}
+                          {scanResult.severityCounts.low > 0 && (
+                            <div className="flex items-center justify-between p-2 rounded" style={{ background: 'rgba(0, 245, 212,.1)', border: '1px solid rgba(0, 245, 212,.3)' }}>
+                              <span className="text-xs" style={{ color: 'rgba(226, 232, 240,.5)' }}>Low</span>
+                              <span className="text-xs font-bold" style={{ color: '#00F5D4' }}>{scanResult.severityCounts.low}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
                   <button
                     onClick={() => viewCurrentReport()}
                     className="w-full py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2"
@@ -806,10 +1174,56 @@ For questions or support, contact your system administrator.
           </div>
 
           {/* History Panel */}
-          <div className="lg:col-span-2 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300" style={{ background: '#111622', border: '1px solid rgba(0, 245, 212,.2)', boxShadow: '0 0 20px rgba(0, 245, 212,.05)' }}>
-            <div className="flex justify-between items-center px-6 py-5" style={{ borderBottom: '1px solid rgba(0, 245, 212,.1)' }}>
+          <div 
+            className="lg:col-span-2 rounded-2xl overflow-hidden hover:scale-105 transition-all duration-300 relative group"
+            style={{ 
+              background: 'linear-gradient(135deg, rgba(17, 22, 34, 0.95) 0%, rgba(8, 11, 16, 0.98) 100%)', 
+              border: '2px solid rgba(0, 245, 212,.3)', 
+              boxShadow: `
+                0 0 40px rgba(0, 245, 212,.2),
+                0 0 80px rgba(0, 245, 212,.1),
+                0 0 120px rgba(0, 245, 212,.05),
+                inset 0 0 60px rgba(0, 245, 212,.05)
+              `
+            }}
+          >
+            {/* Premium Glow Effect */}
+            <div 
+              className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-500"
+              style={{
+                background: 'radial-gradient(circle at 30% 30%, rgba(0, 245, 212,.4) 0%, transparent 50%)',
+                filter: 'blur(20px)'
+              }}
+            />
+            <div 
+              className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500"
+              style={{
+                background: 'radial-gradient(circle at 70% 70%, rgba(0, 245, 212,.3) 0%, transparent 50%)',
+                filter: 'blur(25px)'
+              }}
+            />
+            <div 
+              className="absolute inset-0 rounded-2xl opacity-40"
+              style={{
+                background: 'radial-gradient(circle at center, rgba(0, 245, 212,.2) 0%, transparent 70%)',
+                filter: 'blur(15px)'
+              }}
+            />
+            
+            <div className="flex justify-between items-center px-6 py-5 relative z-10" style={{ borderBottom: '1px solid rgba(0, 245, 212,.1)' }}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: GRADIENTS.secondary, boxShadow: '0 0 20px rgba(0, 245, 212,.3)' }}>
+                <div 
+                  className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                  style={{ 
+                    background: GRADIENTS.secondary, 
+                    boxShadow: `
+                      0 0 30px rgba(0, 245, 212,.5),
+                      0 0 60px rgba(0, 245, 212,.3),
+                      0 0 90px rgba(0, 245, 212,.2),
+                      inset 0 0 20px rgba(0, 245, 212,.3)
+                    `
+                  }}
+                >
                   <Clock className="w-5 h-5" style={{ color: '#080B10' }} />
                 </div>
                 <div>
@@ -827,12 +1241,12 @@ For questions or support, contact your system administrator.
               </button>
             </div>
 
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto relative z-10">
               {history.length ? (
                 <table className="w-full">
                   <thead>
                     <tr className="border-b" style={{ borderBottom: '1px solid rgba(0, 245, 212,.1)', background: 'rgba(0, 245, 212,.05)' }}>
-                      {['Type', 'Content', 'Risk %', 'Status', 'Action'].map(h => (
+                      {['Type', 'Content', 'Risk %', 'Status', 'Source', 'Action'].map(h => (
                         <th key={h} className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: 'rgba(226, 232, 240,.5)' }}>{h}</th>
                       ))}
                     </tr>
@@ -863,6 +1277,23 @@ For questions or support, contact your system administrator.
                         </td>
                         <td className="px-5 py-4">
                           <ThreatBadge status={h.result?.threatStatus} />
+                        </td>
+                        <td className="px-5 py-4">
+                          <span className="text-xs font-medium" style={{ color: 'rgba(226, 232, 240,.5)' }}>
+                            {h.primarySource === 'virustotal' ? (
+                              <span className="flex items-center gap-1" style={{ color: '#00F5D4' }}>
+                                <Shield className="w-3 h-3" /> VT
+                              </span>
+                            ) : h.primarySource === 'google-safe-browsing' ? (
+                              <span className="flex items-center gap-1" style={{ color: '#00F5D4' }}>
+                                <Shield className="w-3 h-3" /> GSB
+                              </span>
+                            ) : (
+                              <span className="flex items-center gap-1" style={{ color: 'rgba(226, 232, 240,.5)' }}>
+                                <Shield className="w-3 h-3" /> Key
+                              </span>
+                            )}
+                          </span>
                         </td>
                         <td className="px-5 py-4">
                           <button

@@ -10,7 +10,7 @@ const KeywordSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ['url', 'email', 'general'],
+    enum: ['url', 'email', 'general', 'credential', 'financial', 'urgency', 'verification', 'incentive', 'action', 'suspicious', 'service', 'information'],
     default: 'general'
   },
   points: {
@@ -23,9 +23,27 @@ const KeywordSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  pattern: {
+    type: String,
+    default: null // Regex pattern for advanced matching
+  },
+  matchType: {
+    type: String,
+    enum: ['contains', 'exact', 'regex', 'word'],
+    default: 'contains'
+  },
+  severity: {
+    type: String,
+    enum: ['low', 'medium', 'high', 'critical'],
+    default: 'medium'
+  },
   isActive: {
     type: Boolean,
     default: true
+  },
+  context: {
+    type: String,
+    default: null // Additional context for when this keyword is suspicious
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
@@ -46,5 +64,9 @@ KeywordSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
+
+// Index for faster queries
+KeywordSchema.index({ category: 1, isActive: 1 });
+KeywordSchema.index({ severity: 1, isActive: 1 });
 
 module.exports = mongoose.model('Keyword', KeywordSchema);

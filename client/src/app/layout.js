@@ -16,13 +16,39 @@ export default function RootLayout({ children }) {
 
         {/* Glowing Wave Background */}
         <div className="fixed inset-0 pointer-events-none z-0">
+          {/* Red Glow Overlay */}
+          <div 
+            className="absolute inset-0 opacity-20"
+            style={{
+              background: 'radial-gradient(ellipse at 80% 20%, rgba(255, 0, 85,.15) 0%, transparent 50%)',
+              filter: 'blur(60px)',
+              animation: 'premium-float 8s ease-in-out infinite'
+            }}
+          />
+          <div 
+            className="absolute inset-0 opacity-15"
+            style={{
+              background: 'radial-gradient(ellipse at 20% 80%, rgba(255, 0, 85,.12) 0%, transparent 50%)',
+              filter: 'blur(80px)',
+              animation: 'premium-float 10s ease-in-out infinite reverse'
+            }}
+          />
+          <div 
+            className="absolute inset-0 opacity-10"
+            style={{
+              background: 'radial-gradient(ellipse at 50% 50%, rgba(255, 0, 85,.08) 0%, transparent 60%)',
+              filter: 'blur(100px)',
+              animation: 'wave-pulse 6s ease-in-out infinite'
+            }}
+          />
+          
           {/* Wave 1 - Full Screen */}
           <svg className="absolute top-0 left-0 w-full h-full" style={{ opacity: 0.6 }} viewBox="0 0 1440 900" preserveAspectRatio="none">
             <defs>
               <linearGradient id="wave1-grad" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" style={{ stopColor: '#00F5D4', stopOpacity: 0.4 }} />
                 <stop offset="50%" style={{ stopColor: '#00D4AA', stopOpacity: 0.3 }} />
-                <stop offset="100%" style={{ stopColor: '#FF0055', stopOpacity: 0.25 }} />
+                <stop offset="100%" style={{ stopColor: '#FF0055', stopOpacity: 0.35 }} />
               </linearGradient>
               <filter id="wave1-glow">
                 <feGaussianBlur stdDeviation="40" result="coloredBlur"/>
@@ -44,9 +70,9 @@ export default function RootLayout({ children }) {
           <svg className="absolute top-0 left-0 w-full h-full" style={{ opacity: 0.5 }} viewBox="0 0 1440 900" preserveAspectRatio="none">
             <defs>
               <linearGradient id="wave2-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style={{ stopColor: '#FF0055', stopOpacity: 0.35 }} />
+                <stop offset="0%" style={{ stopColor: '#FF0055', stopOpacity: 0.4 }} />
                 <stop offset="50%" style={{ stopColor: '#00F5D4', stopOpacity: 0.3 }} />
-                <stop offset="100%" style={{ stopColor: '#FF0055', stopOpacity: 0.25 }} />
+                <stop offset="100%" style={{ stopColor: '#FF0055', stopOpacity: 0.35 }} />
               </linearGradient>
               <filter id="wave2-glow">
                 <feGaussianBlur stdDeviation="45" result="coloredBlur"/>
@@ -69,8 +95,8 @@ export default function RootLayout({ children }) {
             <defs>
               <linearGradient id="wave3-grad" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" style={{ stopColor: '#00F5D4', stopOpacity: 0.35 }} />
-                <stop offset="50%" style={{ stopColor: '#FF0055', stopOpacity: 0.28 }} />
-                <stop offset="100%" style={{ stopColor: '#00F5D4', stopOpacity: 0.2 }} />
+                <stop offset="50%" style={{ stopColor: '#FF0055', stopOpacity: 0.38 }} />
+                <stop offset="100%" style={{ stopColor: '#00F5D4', stopOpacity: 0.25 }} />
               </linearGradient>
               <filter id="wave3-glow">
                 <feGaussianBlur stdDeviation="50" result="coloredBlur"/>
@@ -92,8 +118,9 @@ export default function RootLayout({ children }) {
           <svg className="absolute top-0 left-0 w-full h-full" style={{ opacity: 0.45 }} viewBox="0 0 1440 900" preserveAspectRatio="none">
             <defs>
               <linearGradient id="wave4-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style={{ stopColor: '#00D4AA', stopOpacity: 0.38 }} />
-                <stop offset="100%" style={{ stopColor: '#FF0055', stopOpacity: 0.3 }} />
+                <stop offset="0%" style={{ stopColor: '#FF0055', stopOpacity: 0.4 }} />
+                <stop offset="50%" style={{ stopColor: '#00D4AA', stopOpacity: 0.3 }} />
+                <stop offset="100%" style={{ stopColor: '#FF0055', stopOpacity: 0.35 }} />
               </linearGradient>
               <filter id="wave4-glow">
                 <feGaussianBlur stdDeviation="42" result="coloredBlur"/>
@@ -115,8 +142,9 @@ export default function RootLayout({ children }) {
           <svg className="absolute top-0 left-0 w-full h-full" style={{ opacity: 0.4 }} viewBox="0 0 1440 900" preserveAspectRatio="none">
             <defs>
               <linearGradient id="wave5-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style={{ stopColor: '#FF0055', stopOpacity: 0.35 }} />
-                <stop offset="100%" style={{ stopColor: '#00F5D4', stopOpacity: 0.28 }} />
+                <stop offset="0%" style={{ stopColor: '#FF0055', stopOpacity: 0.42 }} />
+                <stop offset="50%" style={{ stopColor: '#00F5D4', stopOpacity: 0.3 }} />
+                <stop offset="100%" style={{ stopColor: '#FF0055', stopOpacity: 0.38 }} />
               </linearGradient>
               <filter id="wave5-glow">
                 <feGaussianBlur stdDeviation="48" result="coloredBlur"/>

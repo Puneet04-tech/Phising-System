@@ -30,8 +30,8 @@ async function scanUrl(req, res, next) {
       googleSafeBrowsing: { error: e?.message || String(e) },
     }));
 
-    // Rule-based aggregation
-    const scored = scoreUrlByRules(safeUrl, externalSignals);
+    // Rule-based aggregation (now async)
+    const scored = await scoreUrlByRules(safeUrl, externalSignals);
 
     const history = await ScanHistory.create({
       userId,
@@ -49,6 +49,11 @@ async function scanUrl(req, res, next) {
       message: 'URL scan completed',
       result: history.result,
       flaggedKeywords: history.flaggedKeywords,
+      keywordCategories: scored.keywordCategories,
+      severityCounts: scored.severityCounts,
+      externalApiUsed: scored.externalApiUsed,
+      primarySource: scored.primarySource,
+      usedFallbackKeywords: scored.usedFallbackKeywords,
     });
   } catch (err) {
     next(err);
@@ -69,7 +74,7 @@ async function scanEmail(req, res, next) {
 
     const safeContent = truncateText(content, 5000);
 
-    // For email scanning, we don’t necessarily have a single URL to forward.
+    // For email scanning, we don't necessarily have a single URL to forward.
     // We can still parse URLs from content later; for now keep it best-effort.
     const externalSignals = await (async () => {
       const urlMatch = safeContent.match(/https?:\/\/[^\s]+/i);
@@ -81,7 +86,8 @@ async function scanEmail(req, res, next) {
       return forwarded || { googleSafeBrowsing: { matches: [] } };
     })();
 
-    const scored = scoreTextByRules(safeContent, 'email', externalSignals);
+    // Rule-based aggregation (now async)
+    const scored = await scoreTextByRules(safeContent, 'email', externalSignals);
 
     const history = await ScanHistory.create({
       userId,
@@ -100,6 +106,10 @@ async function scanEmail(req, res, next) {
       message: 'Email scan completed',
       result: history.result,
       flaggedKeywords: history.flaggedKeywords,
+      keywordCategories: scored.keywordCategories,
+      severityCounts: scored.severityCounts,
+      externalApiUsed: scored.externalApiUsed,
+      usedFallbackKeywords: scored.usedFallbackKeywords,
     });
   } catch (err) {
     next(err);
