@@ -31,16 +31,16 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex" style={{ background: 'var(--s1)' }}>
+    <div className="min-h-screen flex" style={{ background: 'transparent' }}>
 
       {/* ── Left Branding Panel ────────────────────────────── */}
       <div
         className="hidden lg:flex lg:w-[45%] flex-col justify-between p-14 relative overflow-hidden"
-        style={{ background: 'linear-gradient(145deg,#1e1b4b 0%,#3730a3 40%,#1e3a5f 80%,#0c4a6e 100%)' }}
+        style={{ background: '#111622' }}
       >
         {/* Dot grid overlay */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,.15) 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(circle, rgba(0, 245, 212, .08) 1px, transparent 1px)',
           backgroundSize: '28px 28px', opacity: .4
         }} />
 
@@ -52,39 +52,39 @@ export default function LoginPage() {
                 width: size, height: size,
                 top: '50%', left: '50%',
                 transform: 'translate(-50%,-50%)',
-                borderColor: `rgba(129,140,248,${.12 - i*.04})`,
+                borderColor: `rgba(0, 245, 212,${.12 - i*.04})`,
                 animation: `spin ${20 + i*8}s linear infinite ${i%2?'reverse':''}`,
               }}
             >
               <div className="absolute w-2 h-2 rounded-full top-0 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                style={{ background: `rgba(129,140,248,${.5 - i*.15})` }} />
+                style={{ background: `rgba(0, 245, 212,${.5 - i*.15})` }} />
             </div>
           ))}
         </div>
 
         {/* Glow blob */}
         <div className="absolute pointer-events-none" style={{ top:'30%', left:'20%', width:'300px', height:'300px',
-          background:'radial-gradient(circle,rgba(99,102,241,.25) 0%,transparent 70%)', filter:'blur(40px)' }} />
+          background:'radial-gradient(circle,rgba(0, 245, 212,.15) 0%,transparent 70%)', filter:'blur(40px)' }} />
 
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:'rgba(255,255,255,.15)', backdropFilter:'blur(8px)', border:'1px solid rgba(255,255,255,.2)' }}>
-            <ShieldCheck className="w-4.5 h-4.5 text-white" strokeWidth={2.2} />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:'rgba(0, 245, 212,.15)', backdropFilter:'blur(8px)', border:'1px solid rgba(0, 245, 212,.3)', boxShadow:'0 0 20px rgba(0, 245, 212,.3)' }}>
+            <ShieldCheck className="w-4.5 h-4.5" style={{ color: '#00F5D4' }} strokeWidth={2.2} />
           </div>
-          <span className="text-white text-lg font-bold tracking-tight">PhishGuard</span>
+          <span className="text-lg font-bold tracking-tight" style={{ color: '#E2E8F0' }}>PhishGuard</span>
         </div>
 
         {/* Center content */}
         <div className="relative z-10 space-y-6">
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center anim-float"
-            style={{ background:'rgba(255,255,255,.1)', backdropFilter:'blur(12px)', border:'1px solid rgba(255,255,255,.2)', boxShadow:'0 8px 32px rgba(79,70,229,.3)' }}>
-            <Shield className="w-8 h-8 text-white" />
+            style={{ background:'rgba(0, 245, 212,.1)', backdropFilter:'blur(12px)', border:'1px solid rgba(0, 245, 212,.3)', boxShadow:'0 0 30px rgba(0, 245, 212,.2)' }}>
+            <Shield className="w-8 h-8" style={{ color: '#00F5D4' }} />
           </div>
           <div>
-            <h2 className="text-3xl font-bold text-white tracking-tight leading-tight mb-3">
+            <h2 className="text-3xl font-bold tracking-tight leading-tight mb-3" style={{ color: '#E2E8F0' }}>
               Welcome back.<br/>Stay protected.
             </h2>
-            <p className="text-base leading-relaxed" style={{ color:'rgba(255,255,255,.65)' }}>
+            <p className="text-base leading-relaxed" style={{ color:'rgba(226, 232, 240,.65)' }}>
               Your AI-powered shield against phishing threats. Sign in to access your security dashboard.
             </p>
           </div>
@@ -92,16 +92,16 @@ export default function LoginPage() {
           {/* Stats */}
           <div className="grid grid-cols-2 gap-3">
             {[{ v:'99.7%', l:'Detection Rate' },{ v:'< 2s', l:'Scan Speed' }].map(({ v, l }) => (
-              <div key={l} className="rounded-xl p-4 shimmer" style={{ background:'rgba(255,255,255,.08)', border:'1px solid rgba(255,255,255,.12)', backdropFilter:'blur(8px)' }}>
-                <div className="text-2xl font-bold text-white">{v}</div>
-                <div className="text-xs mt-0.5 font-medium" style={{ color:'rgba(255,255,255,.55)' }}>{l}</div>
+              <div key={l} className="rounded-xl p-4 shimmer" style={{ background:'rgba(0, 245, 212,.08)', border:'1px solid rgba(0, 245, 212,.2)', backdropFilter:'blur(8px)' }}>
+                <div className="text-2xl font-bold" style={{ color: '#00F5D4' }}>{v}</div>
+                <div className="text-xs mt-0.5 font-medium" style={{ color:'rgba(226, 232, 240,.55)' }}>{l}</div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="relative z-10 section-tag" style={{ width:'fit-content', background:'rgba(255,255,255,.08)', borderColor:'rgba(255,255,255,.15)', color:'rgba(255,255,255,.6)', fontSize:'.65rem' }}>
-          <Sparkles className="w-3 h-3" /> Cybersecurity · AI-powered · Real-time
+        <div className="relative z-10 section-tag" style={{ width:'fit-content', background:'rgba(0, 245, 212,.08)', borderColor:'rgba(0, 245, 212,.2)', color:'rgba(226, 232, 240,.6)', fontSize:'.65rem' }}>
+          <Sparkles className="w-3 h-3" style={{ color: '#00F5D4' }} /> Cybersecurity · AI-powered · Real-time
         </div>
       </div>
 
@@ -111,20 +111,20 @@ export default function LoginPage() {
 
           {/* Mobile logo */}
           <div className="lg:hidden mb-8 flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:'linear-gradient(135deg,#4f46e5,#6366f1)' }}>
-              <ShieldCheck className="w-4 h-4 text-white" strokeWidth={2.2} />
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:'rgba(0, 245, 212,.15)', border:'1px solid rgba(0, 245, 212,.3)', boxShadow:'0 0 20px rgba(0, 245, 212,.3)' }}>
+              <ShieldCheck className="w-4 h-4" style={{ color: '#00F5D4' }} strokeWidth={2.2} />
             </div>
-            <span className="text-lg font-bold" style={{ color:'#0a0e27' }}>Phish<span style={{ color:'#4f46e5' }}>Guard</span></span>
+            <span className="text-lg font-bold" style={{ color:'#E2E8F0' }}>Phish<span style={{ color:'#00F5D4' }}>Guard</span></span>
           </div>
 
           {/* Heading */}
           <div className="mb-8 anim-fade-up">
-            <h1 className="text-3xl font-extrabold tracking-tight mb-2" style={{ color:'#0a0e27', letterSpacing:'-0.03em' }}>
+            <h1 className="text-3xl font-extrabold tracking-tight mb-2" style={{ color:'#E2E8F0', letterSpacing:'-0.03em' }}>
               Sign in
             </h1>
-            <p className="text-sm" style={{ color:'#8a93b2' }}>
+            <p className="text-sm" style={{ color:'rgba(226, 232, 240,.6)' }}>
               No account?{' '}
-              <Link href="/signup" style={{ color:'#4f46e5', fontWeight:600 }}>Create one free →</Link>
+              <Link href="/signup" style={{ color:'#00F5D4', fontWeight:600 }}>Create one free →</Link>
             </p>
           </div>
 
@@ -133,15 +133,16 @@ export default function LoginPage() {
 
             {/* Email */}
             <div>
-              <label htmlFor="login-email" className="block text-sm font-semibold mb-1.5" style={{ color:'#1e2340' }}>
+              <label htmlFor="login-email" className="block text-sm font-semibold mb-1.5" style={{ color:'#E2E8F0' }}>
                 Email address
               </label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none transition-colors"
-                  style={{ color: focused === 'email' ? '#4f46e5' : '#b0b8d0' }} />
+                  style={{ color: focused === 'email' ? '#00F5D4' : 'rgba(226, 232, 240,.4)' }} />
                 <input id="login-email" name="email" type="email" required autoComplete="email"
                   placeholder="you@example.com"
                   className="inp"
+                  style={{ background: '#111622', border: '1px solid rgba(0, 245, 212,.2)', color: '#E2E8F0' }}
                   onFocus={() => setFocused('email')}
                   onBlur={() => setFocused('')}
                 />
@@ -150,15 +151,16 @@ export default function LoginPage() {
 
             {/* Password */}
             <div>
-              <label htmlFor="login-password" className="block text-sm font-semibold mb-1.5" style={{ color:'#1e2340' }}>
+              <label htmlFor="login-password" className="block text-sm font-semibold mb-1.5" style={{ color:'#E2E8F0' }}>
                 Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none transition-colors"
-                  style={{ color: focused === 'password' ? '#4f46e5' : '#b0b8d0' }} />
+                  style={{ color: focused === 'password' ? '#00F5D4' : 'rgba(226, 232, 240,.4)' }} />
                 <input id="login-password" name="password" type="password" required autoComplete="current-password"
                   placeholder="••••••••"
                   className="inp"
+                  style={{ background: '#111622', border: '1px solid rgba(0, 245, 212,.2)', color: '#E2E8F0' }}
                   onFocus={() => setFocused('password')}
                   onBlur={() => setFocused('')}
                 />
@@ -168,7 +170,7 @@ export default function LoginPage() {
             {/* Error */}
             {error && (
               <div className="flex items-start gap-3 rounded-xl p-3.5 text-sm anim-scale-in"
-                style={{ background:'#fff1f2', border:'1px solid #fecdd3', color:'#be123c' }}>
+                style={{ background:'rgba(255, 0, 85,.1)', border:'1px solid rgba(255, 0, 85,.3)', color:'#FF0055', boxShadow:'0 0 20px rgba(255, 0, 85,.2)' }}>
                 <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
                 <span>{error}</span>
               </div>
@@ -177,18 +179,18 @@ export default function LoginPage() {
             {/* Submit */}
             <button id="login-submit" type="submit" disabled={loading}
               className="btn-primary w-full mt-2"
-              style={{ height:'50px', borderRadius:'14px', fontSize:'.95rem', fontWeight:700 }}>
+              style={{ height:'50px', borderRadius:'14px', fontSize:'.95rem', fontWeight:700, background:'linear-gradient(135deg, #00F5D4 0%, #00D4AA 100%)', color:'#080B10', boxShadow:'0 0 30px rgba(0, 245, 212,.4)' }}>
               {loading
-                ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Signing in…</>
-                : <><span>Sign in</span><ArrowRight className="w-4 h-4 ml-2" /></>
+                ? <><Loader2 className="w-4 h-4 animate-spin mr-2" style={{ color:'#080B10' }} /> Signing in…</>
+                : <><span>Sign in</span><ArrowRight className="w-4 h-4 ml-2" style={{ color:'#080B10' }} /></>
               }
             </button>
 
             {/* Divider */}
-            <div className="divider">New to PhishGuard?</div>
+            <div className="divider" style={{ color:'rgba(226, 232, 240,.4)' }}>New to PhishGuard?</div>
 
             {/* Signup link */}
-            <Link href="/signup" id="login-to-signup" className="btn-outline w-full" style={{ height:'46px', borderRadius:'12px' }}>
+            <Link href="/signup" id="login-to-signup" className="btn-outline w-full" style={{ height:'46px', borderRadius:'12px', background:'rgba(0, 245, 212,.1)', border:'1px solid rgba(0, 245, 212,.3)', color:'#00F5D4' }}>
               Create free account
             </Link>
           </form>
