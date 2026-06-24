@@ -16,6 +16,27 @@ export default function RootLayout({ children }) {
 
         {/* Glowing Wave Background */}
         <div className="fixed inset-0 pointer-events-none z-0">
+          {/* Star Field */}
+          <div className="absolute inset-0" style={{ background: '#080B10' }}>
+            {[...Array(100)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: Math.random() * 3 + 1 + 'px',
+                  height: Math.random() * 3 + 1 + 'px',
+                  top: Math.random() * 100 + '%',
+                  left: Math.random() * 100 + '%',
+                  background: Math.random() > 0.5 ? '#00F5D4' : '#FF0055',
+                  opacity: Math.random() * 0.5 + 0.2,
+                  animation: `pulse-glow ${Math.random() * 3 + 2}s ease-in-out infinite`,
+                  animationDelay: Math.random() * 2 + 's',
+                  boxShadow: `0 0 ${Math.random() * 10 + 5}px ${Math.random() > 0.5 ? 'rgba(0, 245, 212,.5)' : 'rgba(255, 0, 85,.5)'}`
+                }}
+              />
+            ))}
+          </div>
+          
           {/* Red Glow Overlay */}
           <div 
             className="absolute inset-0 opacity-20"
