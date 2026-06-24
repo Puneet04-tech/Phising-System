@@ -1,10 +1,10 @@
 # URL Security Analysis Features
 
-This document outlines the comprehensive URL security analysis features added to the Phishing Detection System.
+This document outlines the comprehensive URL security analysis features added to the Phishing Detection System for both URL and email scanning.
 
 ## Security Analysis Steps
 
-The system now performs the following security checks on every URL scan:
+The system now performs the following security checks on every URL scan and email scan:
 
 ### 1. URL Obfuscation Detection
 **Purpose:** Detects attempts to hide the true nature of a URL.
@@ -82,9 +82,11 @@ Combined Risk Percentage = Existing Risk % + (Total Risk Score × 0.3)
 - **MEDIUM**: Total risk score > 25
 - **LOW**: Total risk score ≤ 25
 
-## API Response
+## URL Scanning
 
-The scan endpoint now returns detailed security analysis:
+### API Response
+
+The URL scan endpoint returns detailed security analysis:
 
 ```json
 {
@@ -138,6 +140,110 @@ The scan endpoint now returns detailed security analysis:
 }
 ```
 
+## Email Scanning
+
+### URL Extraction and Analysis
+
+The email scanner now:
+1. **Extracts all URLs** from email content using regex pattern
+2. **Removes duplicates** to avoid redundant checks
+3. **Runs security analysis** on each unique URL in parallel
+4. **Calculates combined risk** using maximum risk from all URLs
+5. **Updates threat status** based on highest security risk found
+
+### API Response
+
+The email scan endpoint returns security analysis for all URLs found:
+
+```json
+{
+  "message": "Email scan completed",
+  "result": {
+    "riskPercentage": 55,
+    "threatStatus": "Suspicious",
+    "recommendation": "Proceed with caution - suspicious activity detected"
+  },
+  "flaggedKeywords": ["urgent", "verify"],
+  "urlsFound": 2,
+  "urlSecurityAnalyses": [
+    {
+      "url": "https://example.com/login",
+      "obfuscation": {
+        "hasObfuscation": true,
+        "flags": ["SUSPICIOUS_KEYWORDS_IN_URL"],
+        "riskScore": 10
+      },
+      "ssl": {
+        "valid": true,
+        "issuer": "Let's Encrypt",
+        "validUntil": "2024-12-31T23:59:59Z",
+        "daysUntilExpiry": 180,
+        "riskScore": 0
+      },
+      "domainStructure": {
+        "hostname": "example.com",
+        "subdomains": [],
+        "rootDomain": "example.com",
+        "tld": "com",
+        "dnsRecords": {
+          "recordCount": 5,
+          "types": ["A", "MX", "NS"]
+        },
+        "riskScore": 0
+      },
+      "redirectChain": {
+        "chain": [],
+        "redirectCount": 0,
+        "hasExcessiveRedirects": false,
+        "riskScore": 0
+      },
+      "totalRiskScore": 10,
+      "riskLevel": "LOW"
+    },
+    {
+      "url": "https://192.168.1.1/verify",
+      "obfuscation": {
+        "hasObfuscation": true,
+        "flags": ["IP_ADDRESS_INSTEAD_OF_DOMAIN", "SUSPICIOUS_KEYWORDS_IN_URL"],
+        "riskScore": 20
+      },
+      "ssl": {
+        "valid": false,
+        "reason": "SSL connection failed",
+        "riskScore": 30
+      },
+      "domainStructure": {
+        "hostname": "192.168.1.1",
+        "subdomains": [],
+        "rootDomain": null,
+        "tld": null,
+        "dnsRecords": {
+          "error": "ENOTFOUND"
+        },
+        "riskScore": 15
+      },
+      "redirectChain": {
+        "chain": [],
+        "redirectCount": 0,
+        "hasExcessiveRedirects": false,
+        "riskScore": 0
+      },
+      "totalRiskScore": 65,
+      "riskLevel": "HIGH"
+    }
+  ],
+  "maxSecurityRisk": 65,
+  "averageSecurityRisk": 37.5
+}
+```
+
+### Risk Calculation for Emails
+
+- **Max Security Risk**: Uses the highest risk score from all URLs found
+- **Average Security Risk**: Calculates average risk across all URLs
+- **Combined Risk**: Combines keyword analysis with max URL security risk
+- **Threat Status**: Upgraded if any URL has HIGH security risk
+
 ## Implementation Details
 
 ### Files Modified
@@ -151,16 +257,18 @@ The scan endpoint now returns detailed security analysis:
 
 2. **`server/src/controllers/scan.controller.js`**
    - Integrated security analysis into URL scanning
+   - Integrated security analysis into email scanning
    - Combined security risk with existing risk scoring
    - Updated threat status based on security analysis
-   - Added security analysis to scan response
+   - Added security analysis to scan responses
 
 ### Performance Considerations
 
 - **Parallel Execution**: All security checks run in parallel using `Promise.all()`
 - **Timeout Protection**: SSL checks have 5-second timeout
 - **Error Handling**: All checks have fallback values on failure
-- **Caching**: Consider adding caching for frequently checked domains
+- **URL Deduplication**: Email scanning removes duplicate URLs before analysis
+- **Batch Processing**: Multiple URLs in emails are analyzed in parallel
 
 ### Security Benefits
 
@@ -169,6 +277,8 @@ The scan endpoint now returns detailed security analysis:
 3. **Risk Quantification**: Provides numerical risk scores for decision making
 4. **Detailed Reporting**: Gives users insight into why a URL was flagged
 5. **Adaptive Scoring**: Adjusts risk based on multiple factors
+6. **Email Protection**: Analyzes all URLs embedded in emails
+7. **Comprehensive Coverage**: Checks both direct URLs and URLs in email content
 
 ## Testing
 
@@ -188,12 +298,12 @@ curl -X POST https://phising-system.onrender.com/api/scans/url \
   -d '{"url": "https://expired-cert-example.com"}'
 ```
 
-### Test Domain Analysis
+### Test Email with Multiple URLs
 ```bash
-curl -X POST https://phising-system.onrender.com/api/scans/url \
+curl -X POST https://phising-system.onrender.com/api/scans/email \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_TOKEN" \
-  -d '{"url": "https://sub1.sub2.sub3.sub4.sub5.example.com"}'
+  -d '{"content": "Please click https://example.com/login and https://192.168.1.1/verify to update your account"}'
 ```
 
 ## Future Enhancements
@@ -205,6 +315,9 @@ curl -X POST https://phising-system.onrender.com/api/scans/url \
 5. **Threat Intelligence**: Integrate additional threat intelligence feeds
 6. **Caching Layer**: Cache security analysis results for performance
 7. **Async Processing**: Move heavy checks to background jobs
+8. **Email Header Analysis**: Analyze email headers for additional threats
+9. **Attachment Scanning**: Scan email attachments for malicious content
+10. **Sender Verification**: Verify sender domain authenticity (SPF, DKIM, DMARC)
 
 ## Monitoring
 
@@ -212,9 +325,10 @@ Monitor these metrics to ensure security analysis is working:
 
 - **SSL Check Success Rate**: Should be > 95%
 - **DNS Resolution Success Rate**: Should be > 90%
-- **Average Analysis Time**: Should be < 5 seconds
+- **Average Analysis Time**: Should be < 5 seconds for single URL, < 10 seconds for email
 - **False Positive Rate**: Monitor and adjust thresholds
 - **Risk Score Distribution**: Track typical risk scores
+- **URLs per Email**: Track average number of URLs found in emails
 
 ## Troubleshooting
 
@@ -228,10 +342,16 @@ Monitor these metrics to ensure security analysis is working:
 - Verify DNS queries are not being blocked
 - Consider using alternative DNS servers
 
+### Email Scanning Slow
+- Check number of URLs in email content
+- Consider adding URL limit per email
+- Implement caching for frequently checked domains
+
 ### High False Positive Rate
 - Adjust risk score thresholds
 - Review suspicious keyword lists
 - Fine-tune TLD blocklist
+- Calibrate SSL expiry thresholds
 
 ---
 

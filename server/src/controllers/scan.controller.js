@@ -101,14 +101,48 @@ async function scanEmail(req, res, next) {
 
     const safeContent = truncateText(content, 5000);
 
-    // For email scanning, we don't necessarily have a single URL to forward.
-    // We can still parse URLs from content later; for now keep it best-effort.
-    const externalSignals = await (async () => {
-      const urlMatch = safeContent.match(/https?:\/\/[^\s]+/i);
-      if (!urlMatch) return { googleSafeBrowsing: { matches: [] } };
+    // Extract all URLs from email content
+    const urlMatches = safeContent.match(/https?:\/\/[^\s]+/gi) || [];
+    const uniqueUrls = [...new Set(urlMatches)]; // Remove duplicates
 
-      // Validate before sending to external providers
-      const safeUrl = parseUrlAndValidate(urlMatch[0]);
+    // Run security analysis on all found URLs
+    const urlSecurityAnalyses = await Promise.all(
+      uniqueUrls.map(async (urlStr) => {
+        try {
+          const safeUrl = parseUrlAndValidate(urlStr);
+          const securityAnalysis = await analyzeUrlSecurity(safeUrl);
+          return {
+            url: safeUrl,
+            securityAnalysis,
+          };
+        } catch (error) {
+          return {
+            url: urlStr,
+            securityAnalysis: {
+              error: error.message,
+              totalRiskScore: 50,
+              riskLevel: 'HIGH'
+            }
+          };
+        }
+      })
+    );
+
+    // Calculate combined security risk from all URLs
+    const totalSecurityRisk = urlSecurityAnalyses.reduce((sum, urlAnalysis) => {
+      return sum + (urlAnalysis.securityAnalysis.totalRiskScore || 0);
+    }, 0);
+
+    const averageSecurityRisk = uniqueUrls.length > 0 ? totalSecurityRisk / uniqueUrls.length : 0;
+    const maxSecurityRisk = uniqueUrls.length > 0 
+      ? Math.max(...urlSecurityAnalyses.map(u => u.securityAnalysis.totalRiskScore || 0))
+      : 0;
+
+    // For email scanning, forward the first found URL to external APIs
+    const externalSignals = await (async () => {
+      if (uniqueUrls.length === 0) return { googleSafeBrowsing: { matches: [] } };
+
+      const safeUrl = parseUrlAndValidate(uniqueUrls[0]);
       const forwarded = await forwardUrlToExternalApis(safeUrl).catch(() => null);
       return forwarded || { googleSafeBrowsing: { matches: [] } };
     })();
@@ -116,17 +150,31 @@ async function scanEmail(req, res, next) {
     // Rule-based aggregation (now async)
     const scored = await scoreTextByRules(safeContent, 'email', externalSignals);
 
+    // Combine security analysis risk with existing risk score
+    const combinedRiskScore = Math.min(
+      scored.riskPercentage + (maxSecurityRisk * 0.3),
+      100
+    );
+
+    // Update threat status based on combined risk
+    let finalThreatStatus = scored.threatStatus;
+    if (maxSecurityRisk > 50 && scored.riskPercentage < 50) {
+      finalThreatStatus = 'Suspicious';
+    } else if (maxSecurityRisk > 50 && scored.riskPercentage >= 50) {
+      finalThreatStatus = 'Malicious';
+    }
+
     const history = await ScanHistory.create({
       userId,
       scanType: 'email',
       content: safeContent,
-
       result: {
-        riskPercentage: scored.riskPercentage,
-        threatStatus: scored.threatStatus,
+        riskPercentage: combinedRiskScore,
+        threatStatus: finalThreatStatus,
         recommendation: scored.recommendation,
       },
       flaggedKeywords: scored.flaggedKeywords,
+      urlSecurityAnalyses,
     });
 
     res.status(201).json({
@@ -137,6 +185,18 @@ async function scanEmail(req, res, next) {
       severityCounts: scored.severityCounts,
       externalApiUsed: scored.externalApiUsed,
       usedFallbackKeywords: scored.usedFallbackKeywords,
+      urlsFound: uniqueUrls.length,
+      urlSecurityAnalyses: urlSecurityAnalyses.map(analysis => ({
+        url: analysis.url,
+        obfuscation: analysis.securityAnalysis.obfuscation,
+        ssl: analysis.securityAnalysis.ssl,
+        domainStructure: analysis.securityAnalysis.domainStructure,
+        redirectChain: analysis.securityAnalysis.redirectChain,
+        totalRiskScore: analysis.securityAnalysis.totalRiskScore,
+        riskLevel: analysis.securityAnalysis.riskLevel,
+      })),
+      maxSecurityRisk,
+      averageSecurityRisk,
     });
   } catch (err) {
     next(err);
