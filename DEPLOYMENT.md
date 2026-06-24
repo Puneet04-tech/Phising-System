@@ -56,6 +56,8 @@ This guide covers deploying the Phishing Detection System to **Render** (backend
      ```
 6. Click "Deploy Web Service"
 
+**Note:** The build command will automatically install the new security dependencies (express-rate-limit, express-validator, hpp, xss-clean).
+
 ### Option B: Using render.yaml
 The `render.yaml` file is now at the repository root and pre-configured. Just:
 1. Connect your GitHub repository to Render

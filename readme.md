@@ -373,3 +373,24 @@ All services can be deployed for **free**:
 - Vercel: Hobby tier
 
 ---
+
+## 🔒 Security
+
+The backend implements 12 comprehensive security measures to protect against common attacks:
+
+1. **Helmet** - Security headers (CSP, X-Frame-Options, etc.)
+2. **CORS** - Cross-Origin Resource Sharing with specific origin
+3. **Rate Limiting** - DDoS protection (100 req/15min, 5 auth attempts/15min)
+4. **Body Size Limit** - Prevents large payload attacks (10kb limit)
+5. **XSS Protection** - Sanitizes user input against XSS attacks
+6. **HPP** - HTTP Parameter Pollution protection
+7. **Request Logging** - Security monitoring and auditing
+8. **Header Security** - Removes sensitive server information
+9. **Content-Type Validation** - Ensures proper request format
+10. **Clickjacking Protection** - Prevents iframe embedding
+11. **Input Validation** - Sanitizes and validates all user input
+12. **Secure Error Handling** - Prevents information leakage
+
+For detailed security documentation, see **[SECURITY.md](./SECURITY.md)**.
+
+---
