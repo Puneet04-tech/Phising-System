@@ -315,6 +315,58 @@ npm run dev
 
 ```
 
+---
+
+## 🚀 Deployment
+
+The application is designed for easy deployment to production using **Render** (backend) and **Vercel** (frontend).
+
+### Quick Deploy
+
+**Backend (Render):**
+- The `server/render.yaml` file is pre-configured for Render deployment
+- Connect your GitHub repository to Render
+- Add environment variables (see `server/env.example`)
+- Render will auto-deploy using the config
+
+**Frontend (Vercel):**
+- The `client/vercel.json` file is pre-configured for Vercel deployment
+- Connect your GitHub repository to Vercel
+- Set `NEXT_PUBLIC_API_URL` to your Render backend URL
+- Vercel will auto-deploy using the config
+
+### Detailed Deployment Guide
+
+For complete step-by-step instructions, see **[DEPLOYMENT.md](./DEPLOYMENT.md)** which includes:
+- MongoDB Atlas setup
+- API key configuration (VirusTotal, Google Safe Browsing)
+- Environment variable setup
+- Troubleshooting common issues
+- Security best practices
+
+### Environment Variables
+
+**Backend (Render):**
+```env
+PORT=10000
+NODE_ENV=production
+MONGODB_URI=mongodb+srv://...
+JWT_SECRET=your-secret-key
+VIRUSTOTAL_API_KEY=your-vt-key
+GOOGLE_SAFE_BROWSING_API_KEY=your-google-key
+GOOGLE_SAFE_BROWSING_CLIENT_ID=your-client-id
 ```
 
+**Frontend (Vercel):**
+```env
+NEXT_PUBLIC_API_URL=https://your-api.onrender.com/api
 ```
+
+### Cost
+
+All services can be deployed for **free**:
+- MongoDB Atlas: Free tier
+- Render: Free tier
+- Vercel: Hobby tier
+
+---
