@@ -7,6 +7,7 @@ const {
   parseUrlAndValidate,
   truncateText,
   badRequest,
+  analyzeUrlSecurity,
 } = require('../middleware/validateInput');
 
 function getUserId(req) {
@@ -24,6 +25,9 @@ async function scanUrl(req, res, next) {
 
     const safeUrl = parseUrlAndValidate(url);
 
+    // Run comprehensive URL security analysis
+    const securityAnalysis = await analyzeUrlSecurity(safeUrl);
+
     // External API calls (best-effort)
     const externalSignals = await forwardUrlToExternalApis(safeUrl).catch((e) => ({
       virustotal: { error: e?.message || String(e) },
@@ -33,16 +37,31 @@ async function scanUrl(req, res, next) {
     // Rule-based aggregation (now async)
     const scored = await scoreUrlByRules(safeUrl, externalSignals);
 
+    // Combine security analysis risk score with existing risk score
+    const combinedRiskScore = Math.min(
+      scored.riskPercentage + (securityAnalysis.totalRiskScore * 0.3),
+      100
+    );
+
+    // Update threat status based on combined risk
+    let finalThreatStatus = scored.threatStatus;
+    if (securityAnalysis.riskLevel === 'HIGH' && scored.riskPercentage < 50) {
+      finalThreatStatus = 'Suspicious';
+    } else if (securityAnalysis.riskLevel === 'HIGH' && scored.riskPercentage >= 50) {
+      finalThreatStatus = 'Malicious';
+    }
+
     const history = await ScanHistory.create({
       userId,
       scanType: 'url',
       content: safeUrl,
       result: {
-        riskPercentage: scored.riskPercentage,
-        threatStatus: scored.threatStatus,
+        riskPercentage: combinedRiskScore,
+        threatStatus: finalThreatStatus,
         recommendation: scored.recommendation,
       },
       flaggedKeywords: scored.flaggedKeywords,
+      securityAnalysis,
     });
 
     res.status(201).json({
@@ -54,6 +73,14 @@ async function scanUrl(req, res, next) {
       externalApiUsed: scored.externalApiUsed,
       primarySource: scored.primarySource,
       usedFallbackKeywords: scored.usedFallbackKeywords,
+      securityAnalysis: {
+        obfuscation: securityAnalysis.obfuscation,
+        ssl: securityAnalysis.ssl,
+        domainStructure: securityAnalysis.domainStructure,
+        redirectChain: securityAnalysis.redirectChain,
+        totalRiskScore: securityAnalysis.totalRiskScore,
+        riskLevel: securityAnalysis.riskLevel,
+      },
     });
   } catch (err) {
     next(err);
