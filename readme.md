@@ -352,6 +352,7 @@ For complete step-by-step instructions, see **[DEPLOYMENT.md](./DEPLOYMENT.md)**
 ```env
 PORT=10000
 NODE_ENV=production
+CORS_ORIGIN=https://phisingsystem.vercel.app
 MONGODB_URI=mongodb+srv://...
 JWT_SECRET=your-secret-key
 VIRUSTOTAL_API_KEY=your-vt-key

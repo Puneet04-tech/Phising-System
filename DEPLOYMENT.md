@@ -47,6 +47,7 @@ This guide covers deploying the Phishing Detection System to **Render** (backend
      ```
      PORT=10000
      NODE_ENV=production
+     CORS_ORIGIN=https://phisingsystem.vercel.app
      MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/phishing-detection?retryWrites=true&w=majority
      JWT_SECRET=<your-secret-key>
      VIRUSTOTAL_API_KEY=<your-vt-key>
@@ -137,6 +138,7 @@ curl https://your-api.onrender.com/health
 |----------|-------------|----------|
 | PORT | Server port (use 10000 for Render) | Yes |
 | NODE_ENV | Set to `production` | Yes |
+| CORS_ORIGIN | Frontend URL for CORS (e.g., https://phisingsystem.vercel.app) | Yes |
 | MONGODB_URI | MongoDB connection string | Yes |
 | JWT_SECRET | Secret for JWT tokens | Yes |
 | VIRUSTOTAL_API_KEY | VirusTotal API key | Yes |

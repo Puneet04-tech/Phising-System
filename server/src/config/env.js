@@ -13,6 +13,7 @@ function requireEnv(name) {
 const env = {
   PORT: process.env.PORT ? Number(process.env.PORT) : 5000,
   NODE_ENV: process.env.NODE_ENV || 'development',
+  CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:3000',
 
   MONGODB_URI: requireEnv('MONGODB_URI'),
   JWT_SECRET: requireEnv('JWT_SECRET'),
@@ -20,6 +21,8 @@ const env = {
   // External APIs keys (will be used later by scan controllers)
   VIRUSTOTAL_API_KEY: process.env.VIRUSTOTAL_API_KEY || '',
   GOOGLE_SAFE_BROWSING_KEY: process.env.GOOGLE_SAFE_BROWSING_KEY || '',
+  GOOGLE_SAFE_BROWSING_API_KEY: process.env.GOOGLE_SAFE_BROWSING_API_KEY || '',
+  GOOGLE_SAFE_BROWSING_CLIENT_ID: process.env.GOOGLE_SAFE_BROWSING_CLIENT_ID || '',
 };
 
 module.exports = { env };
