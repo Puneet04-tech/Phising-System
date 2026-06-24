@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: phishing-detection-api
+    runtime: node
+    plan: free
+    buildCommand: cd server && npm install
+    startCommand: cd server && node src/server.js
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: VIRUSTOTAL_API_KEY
+        sync: false
+      - key: GOOGLE_SAFE_BROWSING_API_KEY
+        sync: false
+      - key: GOOGLE_SAFE_BROWSING_CLIENT_ID
+        sync: false
+    healthCheckPath: /health
+    autoDeploy: true

@@ -324,10 +324,12 @@ The application is designed for easy deployment to production using **Render** (
 ### Quick Deploy
 
 **Backend (Render):**
-- The `server/render.yaml` file is pre-configured for Render deployment
+- The `render.yaml` file is pre-configured at repository root for Render deployment
 - Connect your GitHub repository to Render
 - Add environment variables (see `server/env.example`)
 - Render will auto-deploy using the config
+- Build command: `cd server && npm install`
+- Start command: `cd server && node src/server.js`
 
 **Frontend (Vercel):**
 - The `client/vercel.json` file is pre-configured for Vercel deployment

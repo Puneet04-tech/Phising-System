@@ -38,12 +38,11 @@ This guide covers deploying the Phishing Detection System to **Render** (backend
 1. Go to [Render](https://render.com/)
 2. Click "New +" → "Web Service"
 3. Connect your GitHub repository
-4. Select the `server` folder (or configure root directory)
-5. Configure:
+4. Configure:
    - **Name**: `phishing-detection-api`
    - **Runtime**: Node
-   - **Build Command**: `npm install`
-   - **Start Command**: `node src/server.js`
+   - **Build Command**: `cd server && npm install`
+   - **Start Command**: `cd server && node src/server.js`
    - **Environment Variables**:
      ```
      PORT=10000
@@ -57,7 +56,7 @@ This guide covers deploying the Phishing Detection System to **Render** (backend
 6. Click "Deploy Web Service"
 
 ### Option B: Using render.yaml
-The `render.yaml` file is already configured. Just:
+The `render.yaml` file is now at the repository root and pre-configured. Just:
 1. Connect your GitHub repository to Render
 2. Render will automatically detect and deploy using the config
 
